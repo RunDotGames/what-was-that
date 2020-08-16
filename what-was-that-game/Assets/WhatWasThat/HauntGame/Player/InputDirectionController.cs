@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -13,6 +13,11 @@ public enum MoveDirection {
 public class DirectionalInput{
   public KeyCode key;
   public MoveDirection direction;
+}
+
+[Serializable]
+public class InputDirectionConfig {
+  public List<DirectionalInput> inputDirections;
 }
 
 public class DirectionalInputState {
@@ -31,7 +36,7 @@ public class InputStateComparer : IComparer<DirectionalInputState> {
     }
 }
 
-public class PlayerController : MonoBehaviour {
+public class InputDirectionController: DirectionController {
   private static Dictionary<MoveDirection, MoveDirection> axisOpposit = new Dictionary<MoveDirection, MoveDirection>(){
     {MoveDirection.Forward, MoveDirection.Backward},
     {MoveDirection.Backward, MoveDirection.Forward},
@@ -46,35 +51,13 @@ public class PlayerController : MonoBehaviour {
     {MoveDirection.Right, Vector3.right},
   };
   
-  public LayerMask ground;
-  public List<DirectionalInput> inputDirections;
-  public float groundCheckDistance = 0.1f;
-  public float moveSpeed = 10.0f;
-  public float rotationSpeed = 10.0f;
-
   private InputStateComparer comparer = new InputStateComparer();
   private List<DirectionalInputState> inputStates;
-  private bool isGrounded;
-  private Rigidbody body;
-  private Vector3 currentDir;
   
-  void Start() {
-    body = GetComponentInChildren<Rigidbody>();
-    body.isKinematic = false;
-    inputStates = inputDirections.Select((input) =>
+  public InputDirectionController(InputDirectionConfig config) {
+    inputStates = config.inputDirections.Select((input) =>
       new DirectionalInputState(){input = input, at = Stopwatch.GetTimestamp(), isPressed = false}
     ).ToList();
-  }
-
-  private void UpdateGroundState(){
-    var wasGrounded = isGrounded;
-    isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, ground);
-    if (wasGrounded && !isGrounded) {
-      body.isKinematic = false;
-    }
-    if(!wasGrounded && isGrounded) {
-      body.isKinematic = true;
-    }
   }
 
   private Vector3 GetDirectionComp(MoveDirection dir) {
@@ -89,7 +72,7 @@ public class PlayerController : MonoBehaviour {
     return Vector3.zero;
   }
 
-  private void UpdateInputState(){
+  public void Update(){
     inputStates.ForEach((inputState) => {
       inputState.isPressed = Input.GetKey(inputState.input.key);
       if(Input.GetKeyDown(inputState.input.key)) {
@@ -99,34 +82,11 @@ public class PlayerController : MonoBehaviour {
     inputStates.Sort(comparer);
   }
 
-  void Update() {
-    UpdateGroundState();
-    UpdateInputState();
-    
-    if(!isGrounded) {
-      currentDir = Vector3.zero;
-      return;
-    }
-    currentDir = GetDirectionComp(MoveDirection.Forward)
+  public Vector3 GetCurrentDirection(){
+    return (GetDirectionComp(MoveDirection.Forward)
       + GetDirectionComp(MoveDirection.Backward)
       + GetDirectionComp(MoveDirection.Left)
-      + GetDirectionComp(MoveDirection.Right);
-    currentDir = currentDir.normalized;
-    
+      + GetDirectionComp(MoveDirection.Right)).normalized;
   }
 
-  void FixedUpdate() {
-    if(currentDir.sqrMagnitude == 0) {
-      return;
-    }
-    body.MovePosition(body.position + currentDir * moveSpeed * Time.deltaTime);
-    var newRotation = Quaternion.RotateTowards(
-      body.transform.rotation,
-      Quaternion.LookRotation(currentDir, Vector3.up),
-      Time.deltaTime * rotationSpeed
-    );
-    UnityEngine.Debug.Log(Quaternion.LookRotation(currentDir, Vector3.up).eulerAngles);
-    body.MoveRotation(newRotation);
-  }
-  
 }
