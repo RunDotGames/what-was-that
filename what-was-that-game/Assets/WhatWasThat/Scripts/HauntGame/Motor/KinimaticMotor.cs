@@ -1,14 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.Diagnostics;
-using System.Linq;
 
 [Serializable]
 public class KinimaticMotorConfig {
-  public LayerMask ground;
-  public float groundCheckDistance = 0.1f;
   public float moveSpeed = 10.0f;
   public float rotationSpeed = 10.0f;
 }
@@ -18,19 +12,21 @@ public class KinimaticMotor {
   private bool isGrounded;
   private Rigidbody body;
   private KinimaticMotorConfig config;
-  private DirectionController direction;
+  private DirectionProvider dirProvider;
+  private KinimaticMotorSettings settings;
   
-  public KinimaticMotor(KinimaticMotorConfig config, Rigidbody body, DirectionController direction) {
+  public KinimaticMotor(KinimaticMotorConfig config, Rigidbody body, DirectionProvider dirProvider) {
     this.body = body;
     body.isKinematic = false;
     this.config = config;
-    this.direction = direction;
+    this.dirProvider = dirProvider;
+    this.settings = KinimaticMotorSettings.GetInstance();
   }
 
 
   public void FixedUpdate() {
     var wasGrounded = isGrounded;
-    isGrounded = Physics.Raycast(body.transform.position, Vector3.down, config.groundCheckDistance, config.ground);
+    isGrounded = Physics.Raycast(body.transform.position, Vector3.down, settings.GetGroundCheckDistance(), settings.GetGroundLayerMask());
     if (wasGrounded && !isGrounded) {
       body.isKinematic = false;
     }
@@ -38,7 +34,7 @@ public class KinimaticMotor {
       body.isKinematic = true;
     }
 
-    var currentDir = direction.GetCurrentDirection();
+    var currentDir = dirProvider.GetDirection();
     if(currentDir.sqrMagnitude == 0 || !isGrounded) {
       return;
     }

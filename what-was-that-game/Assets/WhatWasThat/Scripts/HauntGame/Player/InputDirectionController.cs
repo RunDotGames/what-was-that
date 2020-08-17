@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -36,7 +35,7 @@ public class InputStateComparer : IComparer<DirectionalInputState> {
     }
 }
 
-public class InputDirectionController: DirectionController {
+public class InputDirectionController: DirectionProvider {
   private static Dictionary<MoveDirection, MoveDirection> axisOpposit = new Dictionary<MoveDirection, MoveDirection>(){
     {MoveDirection.Forward, MoveDirection.Backward},
     {MoveDirection.Backward, MoveDirection.Forward},
@@ -82,7 +81,7 @@ public class InputDirectionController: DirectionController {
     inputStates.Sort(comparer);
   }
 
-  public Vector3 GetCurrentDirection(){
+  public Vector3 GetDirection(){
     return (GetDirectionComp(MoveDirection.Forward)
       + GetDirectionComp(MoveDirection.Backward)
       + GetDirectionComp(MoveDirection.Left)

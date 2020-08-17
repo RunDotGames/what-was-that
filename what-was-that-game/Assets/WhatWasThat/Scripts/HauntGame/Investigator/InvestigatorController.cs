@@ -9,7 +9,7 @@ public class InvestigatorController : MonoBehaviour {
 
   public void Start(){
     var body = GetComponent<Rigidbody>();
-    pather = new PathDirectionController(GameObject.FindObjectOfType<NodePath>(), transform);
+    pather = new PathDirectionController(transform);
     motor = new KinimaticMotor(motorConfig, body, pather);
   }
 

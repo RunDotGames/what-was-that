@@ -1,22 +1,18 @@
-
-
 using UnityEngine;
 using System.Collections.Generic;
 
-public class PathDirectionController : DirectionController {
+public class PathDirectionController : DirectionProvider {
   private static Vector3 level = new Vector3(1, 0 ,1);
-  private NodePath path;
   private List<NodeItem> route;
   private int currentIndex;
   private Transform root;
 
-  public PathDirectionController(NodePath path, Transform root) {
-    this.path = path;
+  public PathDirectionController(Transform root) {
     this.root = root;
   }
 
   public void Navigate(Vector3 from, Vector3 to) {
-    route = path.GetRoute(from, to);
+    route = NodePathController.GetRoute(from, to);
     if(route != null && route.Count < 1) {
       route = null;
     }
@@ -37,7 +33,7 @@ public class PathDirectionController : DirectionController {
     }
   }
 
-  public Vector3 GetCurrentDirection(){
+  public Vector3 GetDirection(){
     if(route == null) {
       return Vector3.zero;
     }
