@@ -13,6 +13,7 @@ public class PathDirectionController : DirectionProvider {
 
   public void Navigate(Vector3 from, Vector3 to) {
     route = NodePathController.GetRoute(from, to);
+    Debug.Log("route len " + route.Count);
     if(route != null && route.Count < 1) {
       route = null;
     }
