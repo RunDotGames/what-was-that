@@ -13,20 +13,23 @@ public class KinimaticMotor {
   private Rigidbody body;
   private KinimaticMotorConfig config;
   private DirectionProvider dirProvider;
-  private KinimaticMotorSettings settings;
-  
-  public KinimaticMotor(KinimaticMotorConfig config, Rigidbody body, DirectionProvider dirProvider) {
+  private KinimaticMotorController settings;
+  private LayerMask groundLayerMask;
+  private float groundCheckDistance;
+
+  public KinimaticMotor(KinimaticMotorConfig config, Rigidbody body, DirectionProvider dirProvider, float groundCheckDistance, LayerMask groundLayerMask) {
     this.body = body;
     body.isKinematic = false;
     this.config = config;
     this.dirProvider = dirProvider;
-    this.settings = KinimaticMotorSettings.GetInstance();
+    this.groundLayerMask = groundLayerMask;
+    this.groundCheckDistance = groundCheckDistance;  
   }
 
 
   public void FixedUpdate() {
     var wasGrounded = isGrounded;
-    isGrounded = Physics.Raycast(body.transform.position, Vector3.down, settings.GetGroundCheckDistance(), settings.GetGroundLayerMask());
+    isGrounded = Physics.Raycast(body.transform.position, Vector3.down, groundCheckDistance, groundLayerMask);
     if (wasGrounded && !isGrounded) {
       body.isKinematic = false;
     }

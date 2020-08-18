@@ -260,11 +260,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a017b2b8ce6ffa24b9d8b636e38fc4b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  motorController: {fileID: 279684547}
+  nodePathController: {fileID: 279684548}
   investigator: {fileID: 691385646}
   to: {fileID: 638932410}
   linkSets:
   - {fileID: 933955468}
   - {fileID: 1975698015}
+  player: {fileID: 1654087154}
+  floor: {fileID: 891576153}
 --- !u!114 &279684547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,7 +278,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 279684544}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d904318cdbcc4d7469484d5425c5e269, type: 3}
+  m_Script: {fileID: 11500000, guid: 629b833621b225948aed9ba826f877b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   groundLayerName: ground
@@ -497,7 +501,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 638932409}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10.888854, y: 1.5603867, z: -14.934871}
+  m_LocalPosition: {x: -4.77, y: 1.5603867, z: -10.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 279684545}
@@ -2294,7 +2298,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1975440112}
   m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: 2.531146, y: 12.92, z: -12.08}
+  m_LocalPosition: {x: 2.531146, y: 17.1, z: -22.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 279684545}

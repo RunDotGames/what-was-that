@@ -1,18 +1,22 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+public delegate List<NodeItem> ProvideRoute(Vector3 from, Vector3 to);
+
 public class PathDirectionController : DirectionProvider {
   private static Vector3 level = new Vector3(1, 0 ,1);
   private List<NodeItem> route;
   private int currentIndex;
   private Transform root;
+  private ProvideRoute GetRoute;
 
-  public PathDirectionController(Transform root) {
+  public PathDirectionController(Transform root, ProvideRoute GetRoute) {
     this.root = root;
+    this.GetRoute = GetRoute;
   }
 
   public void Navigate(Vector3 from, Vector3 to) {
-    route = NodePathController.GetRoute(from, to);
+    route = GetRoute(from, to);
     Debug.Log("route len " + route.Count);
     if(route != null && route.Count < 1) {
       route = null;

@@ -8,10 +8,10 @@ public class PlayerController : MonoBehaviour {
   private KinimaticMotor motor;
   private InputDirectionController input;
 
-  void Start() {
+  public void Init(KinimaticMotorController motorController) {
     var body = GetComponentInChildren<Rigidbody>();
     input = new InputDirectionController(inputConfig);
-    motor = new KinimaticMotor(motorConfig, body, input);
+    motor = motorController.GetMotor(motorConfig, body, input);
     
   }
 

@@ -12,10 +12,10 @@ public class InvestigatorController : MonoBehaviour {
 
   private bool isMoving;
 
-  public void Start(){
+  public void Init(KinimaticMotorController motorController, NodePathController nodePath){
     var body = GetComponent<Rigidbody>();
-    pather = new PathDirectionController(transform);
-    motor = new KinimaticMotor(motorConfig, body, pather);
+    pather = new PathDirectionController(transform, nodePath.GetRoute);
+    motor = motorController.GetMotor(motorConfig, body, pather);
     animator = GetComponentInChildren<Animator>();
     animator.Play(idleStateName);
   }

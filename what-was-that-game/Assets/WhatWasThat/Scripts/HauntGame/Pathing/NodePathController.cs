@@ -85,54 +85,42 @@ public class NodePathController: MonoBehaviour {
     return shortestTraversal;
   }
 
-  private static NodePathController instance;
-  private static NodePathController GetInstance(){
-    if(instance == null){
-      instance = GameObject.FindObjectOfType<NodePathController>();
-    }
-    return instance;
-  }
-
-  public static void AddLinks(List<NodeLink> links){
+  public void AddLinks(List<NodeLink> links){
     var mergeOut = new Dictionary<string, string>();
-    var instance = GetInstance();
-
-    foreach(var existing in instance.nodes.Values) {
+    foreach(var existing in nodes.Values) {
       var existingPosition = existing.item.transform.position;
       foreach(var link in links) {
-        if( (existingPosition - link.a.transform.position).magnitude < instance.mergeDistance) {
+        if( (existingPosition - link.a.transform.position).magnitude < mergeDistance) {
           mergeOut[link.a.guid] = existing.item.guid;
         }
-        if( (existingPosition - link.b.transform.position).magnitude < instance.mergeDistance) {
+        if( (existingPosition - link.b.transform.position).magnitude < mergeDistance) {
           mergeOut[link.b.guid] = existing.item.guid;
         }
       }
     }
     foreach(var link in links) {
-      var aItem = mergeOut.ContainsKey(link.a.guid) ? instance.nodes[mergeOut[link.a.guid]].item : link.a;
-      var bItem = mergeOut.ContainsKey(link.b.guid) ? instance.nodes[mergeOut[link.b.guid]].item : link.b;
-      var aState = instance.RequireState(aItem);
-      var bState = instance.RequireState(bItem);
+      var aItem = mergeOut.ContainsKey(link.a.guid) ? nodes[mergeOut[link.a.guid]].item : link.a;
+      var bItem = mergeOut.ContainsKey(link.b.guid) ? nodes[mergeOut[link.b.guid]].item : link.b;
+      var aState = RequireState(aItem);
+      var bState = RequireState(bItem);
       bState.to[aItem.guid] = aState;
       aState.to[bItem.guid] = bState;
     }
-    Debug.Log(instance.nodes.Keys.Count);
   }
 
-  public static List<NodeItem> GetRoute(Vector3 from, Vector3 to) {
-    var instance = GetInstance();
-    var fromNode = instance.GetNearestNode(from);
-    var toNode = instance.GetNearestNode(to);
+  public List<NodeItem> GetRoute(Vector3 from, Vector3 to) {
+    var fromNode = GetNearestNode(from);
+    var toNode = GetNearestNode(to);
     if(fromNode.guid == toNode.guid) {
       return new List<NodeItem>(){fromNode};
     }
 
     var baseTraversal = new NodeTraversal(){distance = 0.0f, guids = new List<string>() {}};
-    var pathTraversal = instance.GetTraversal(baseTraversal, fromNode, toNode);
+    var pathTraversal = GetTraversal(baseTraversal, fromNode, toNode);
     if(pathTraversal == null) {
       return null;
     }
-    return pathTraversal.guids.Select((guid) => instance.nodes[guid].item).ToList();
+    return pathTraversal.guids.Select((guid) => nodes[guid].item).ToList();
     
   }
 }
