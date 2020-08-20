@@ -5,7 +5,7 @@ public class InvestigatorDemo: MonoBehaviour {
 
   public KinimaticMotorController motorController;
   public NodePathController nodePathController;
-  public InvestigatorController investigator;
+  public InvestigatorController[] investigators;
   public Transform to;
   public List<NodeLinks> linkSets;
   public PlayerController player;
@@ -17,13 +17,16 @@ public class InvestigatorDemo: MonoBehaviour {
     }
     motorController.Init();
     player.Init(motorController);
-    investigator.Init(motorController, nodePathController);
+    foreach(var investigator in investigators) {
+      investigator.Init(motorController, nodePathController);
+    }
     motorController.AddFloor(floor);
   }
   public void Update(){
     if(Input.GetKeyDown(KeyCode.Space)){
-      
-      investigator.GoTo(to.position);
+     foreach(var investigator in investigators) {
+        investigator.GoTo(to.position);
+      } 
     }
   }
 

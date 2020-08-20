@@ -8,7 +8,7 @@ public class InvestigatorController : MonoBehaviour {
 
   private KinimaticMotor motor;
   private PathDirectionController pather;
-  private Animator animator;
+  private MotorAnimator motorAnimator;
 
   private bool isMoving;
 
@@ -16,24 +16,22 @@ public class InvestigatorController : MonoBehaviour {
     var body = GetComponent<Rigidbody>();
     pather = new PathDirectionController(transform, nodePath.GetRoute);
     motor = motorController.GetMotor(motorConfig, body, pather);
-    animator = GetComponentInChildren<Animator>();
-    animator.Play(idleStateName);
+    motorAnimator = new MotorAnimator(pather, GetComponentInChildren<Animator>(), walkStateName, idleStateName);
   }
 
   public void Update(){
+    if(pather == null) {
+      return;
+    }
     pather.Update();
-    var direction = pather.GetDirection();
-    var wasMoving = isMoving;
-    isMoving = direction.magnitude > 0;
-    if(isMoving && !wasMoving){
-      animator.Play(walkStateName);
-    }
-    if(!isMoving && wasMoving){
-      animator.Play(idleStateName);
-    }
+    motorAnimator.Update();
+    
   }
 
   public void FixedUpdate() {
+    if(motor == null) {
+      return;
+    }
     motor.FixedUpdate();
   }
 
