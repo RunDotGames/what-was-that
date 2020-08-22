@@ -17,10 +17,11 @@ public class PathDirectionController : DirectionProvider {
 
   public void Navigate(Vector3 from, Vector3 to) {
     route = GetRoute(from, to);
-    Debug.Log("route len " + route.Count);
     if(route != null && route.Count < 1) {
+      Debug.Log("unroutable");
       route = null;
     }
+    Debug.Log("route len " + route.Count);
     currentIndex = 0;
   }
 

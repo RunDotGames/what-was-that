@@ -371,12 +371,16 @@ MonoBehaviour:
   anchors:
   - facing: 0
     allowAttachment: 1
+    allowNoWall: 1
   - facing: 1
     allowAttachment: 0
+    allowNoWall: 0
   - facing: 2
     allowAttachment: 1
+    allowNoWall: 1
   - facing: 3
     allowAttachment: 1
+    allowNoWall: 1
   path: {fileID: 8170443473199916086}
   floor: {fileID: 2717342850198594906}
   orientation: 0

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 public enum WallState {
-  Unknown, Solid, Open
+  Unknown, Solid, Open, None
 }
 public class RoomState {
   public Room room;
@@ -32,7 +32,8 @@ public class HouseController : MonoBehaviour {
   public int targetRoomCount;
   public GameObject startingRoomAnchor;
   public Room[] roomPrefabs;
-  public Room startingRoomPrefab;
+  public StartingRoom startingRoomPrefabFront;
+  public Room startingRoomPrefabBack;
   public GameObject solidWallPrefab;
   public GameObject openWallPrefab;
 
@@ -40,6 +41,8 @@ public class HouseController : MonoBehaviour {
   private KinimaticMotorController motorController;
   private NodePathController pathController;
   private List<FreePosition> freePositions;
+
+  private Transform startingPoint;
 
   public void Init(KinimaticMotorController motorController, NodePathController pathController){
     this.motorController = motorController;
@@ -56,14 +59,17 @@ public class HouseController : MonoBehaviour {
 
   
 
-  private void AddRoom(Room roomPrefab, int x, int y, RoomFacing orientation){
+  private RoomState AddRoom(RoomProvider roomPrefab, int x, int y, RoomFacing orientation){
     var myPosition = new Vector2Int(x,  y);
-    var room = GameObject.Instantiate(roomPrefab, Vector3.zero, RoomFacingUtil.GetRotation(orientation), startingRoomAnchor.transform);
-    motorController.AddFloor(room.floor);
-    pathController.AddLinks(room.path.links);
+    var room = GameObject.Instantiate(roomPrefab.GetRoom(), Vector3.zero, RoomFacingUtil.GetRotation(orientation), startingRoomAnchor.transform);
+    var blockers = room.GetBlockers();
+    foreach (var blocker in blockers) {
+      motorController.AddBlocker(blocker);
+    }
     rooms[x][y] = new RoomState(){orientation=orientation, x=x, y=y, room=room};
     room.orientation = orientation;
     room.gameObject.transform.localPosition = new Vector3(x*unitWorldSize, 0, y*unitWorldSize);
+    pathController.AddLinks(room.path.links);
     foreach(var anchor in room.anchors){
       if(!anchor.allowAttachment) {
         continue;
@@ -81,26 +87,32 @@ public class HouseController : MonoBehaviour {
         if(existingFree >= 0){
           continue;
         }
-        // Debug.Log(position + " free from" + anchorFacingOrientedOpposite + " for " + myPosition + " orig " + anchor.facing);
         freePositions.Add(new FreePosition(){position = position, from = anchorFacingOrientedOpposite});
       }
     }
     var myFreeIndex = freePositions.FindIndex((item) => item.position == myPosition);
     if(myFreeIndex < 0){
-      return;
+      return rooms[x][y];
     }
     freePositions.RemoveAt(myFreeIndex);
+    return rooms[x][y];
   }
 
   private void GenerateWall(int x, int y, WallState state, RoomState room, RoomFacing facing) {
+    room.wallStates[facing] = state;
+    if(state == WallState.None){
+      return;
+    }
     var rotation = facing == RoomFacing.East || facing == RoomFacing.West ? Quaternion.Euler(0, 90, 0) : Quaternion.identity;
     var prefab = state == WallState.Solid ? solidWallPrefab : openWallPrefab;
     var offset = RoomFacingUtil.GetOffset(facing);
     var position = new Vector3(x * unitWorldSize, 0, y * unitWorldSize) + (new Vector3(offset.x, 0 , offset.y) * (unitWorldSize/2));
     var wall = GameObject.Instantiate(prefab, position, rotation, startingRoomAnchor.transform);
-    room.wallStates[facing] = state;
   }
 
+  public Transform GetStartingPoint() {
+    return startingPoint;
+  }
   public void Generate(){
     freePositions = new List<FreePosition>();
     rooms = new RoomState[maxX][];
@@ -108,7 +120,10 @@ public class HouseController : MonoBehaviour {
       rooms[x] = new RoomState[maxY];
     }
     
-    AddRoom(startingRoomPrefab, maxX/2 + maxX%2, 0, RoomFacing.South);
+    var startingRoom = AddRoom(startingRoomPrefabFront, maxX/2 + maxX%2, 0, RoomFacing.South);
+    var startingRoomComp = startingRoom.room.gameObject.GetComponent<StartingRoom>();
+    startingPoint = startingRoomComp.startingPoint;
+    AddRoom(startingRoomPrefabBack, maxX/2 + maxX%2, 1, RoomFacing.South);
     for (var index = 0; index < targetRoomCount; index++){
       if (freePositions.Count <= 0) {
         break;
@@ -152,20 +167,27 @@ public class HouseController : MonoBehaviour {
               GenerateWall(x, y, WallState.Solid, roomState, facing);
               continue;
             }
+           
             var facingOriented = RoomFacingUtil.GetInverseOrientated(facing, roomState.orientation);
             var anchorForFacing = roomState.room.anchors.Find((anchor) => anchor.facing == facingOriented);
             var oppositeFacing = RoomFacingUtil.GetOpposite(facing);
-            Debug.Log("position " + roomState.x + "," + roomState.y + " for " + facing + " confirms " + anchorForFacing.facing + "?" + anchorForFacing.allowAttachment);
             if(!anchorForFacing.allowAttachment){
               GenerateWall(x, y, WallState.Solid, roomState, facing);
               oppositeRoom.wallStates[oppositeFacing] = WallState.Solid;
               continue;
             }
+            
             var oppositeFacingOriented = RoomFacingUtil.GetInverseOrientated(oppositeFacing, oppositeRoom.orientation);
             var anchorForOppositeFacing = oppositeRoom.room.anchors.Find((anchor) => anchor.facing == oppositeFacingOriented);
             if(!anchorForOppositeFacing.allowAttachment){
               GenerateWall(x, y, WallState.Solid, roomState, facing);
               oppositeRoom.wallStates[oppositeFacing] = WallState.Solid;
+              continue;
+            }
+            
+            if(anchorForOppositeFacing.allowNoWall && anchorForFacing.allowNoWall){
+              GenerateWall(x, y, WallState.None, roomState, facing);
+              oppositeRoom.wallStates[oppositeFacing] = WallState.None;  
               continue;
             }
             GenerateWall(x, y, WallState.Open, roomState, facing);

@@ -4,6 +4,7 @@ public class KinimaticMotorController : MonoBehaviour {
 
   public string groundLayerName = "ground";
   public float groundCheckDistance = 0.01f;
+  public float wallCheckDistance = 0.5f;
   
   private int groundLayer;
   private LayerMask groundLayerMask;
@@ -18,10 +19,10 @@ public class KinimaticMotorController : MonoBehaviour {
   }
 
   public KinimaticMotor GetMotor(KinimaticMotorConfig config, Rigidbody body, DirectionProvider dirProvider) {
-    return new KinimaticMotor(config, body, dirProvider, groundCheckDistance, groundLayerMask);
+    return new KinimaticMotor(config, body, dirProvider, groundCheckDistance, groundLayerMask, wallCheckDistance);
   }
 
-  public void AddFloor(KinimaticMotorFloor floor){
+  public void AddBlocker(MotorBlocker floor){
     floor.Init(groundLayer);
   }
 

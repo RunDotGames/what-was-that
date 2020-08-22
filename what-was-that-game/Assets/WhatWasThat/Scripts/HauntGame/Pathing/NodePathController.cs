@@ -90,10 +90,12 @@ public class NodePathController: MonoBehaviour {
     foreach(var existing in nodes.Values) {
       var existingPosition = existing.item.transform.position;
       foreach(var link in links) {
-        if( (existingPosition - link.a.transform.position).magnitude < mergeDistance) {
+        var aDistance = (existingPosition - link.a.transform.position).magnitude;
+        if( aDistance < mergeDistance) {
           mergeOut[link.a.guid] = existing.item.guid;
         }
-        if( (existingPosition - link.b.transform.position).magnitude < mergeDistance) {
+        var bDistance =  (existingPosition - link.b.transform.position).magnitude;
+        if( bDistance < mergeDistance) {
           mergeOut[link.b.guid] = existing.item.guid;
         }
       }
@@ -106,6 +108,7 @@ public class NodePathController: MonoBehaviour {
       bState.to[aItem.guid] = aState;
       aState.to[bItem.guid] = bState;
     }
+    Debug.Log(nodes.Count);
   }
 
   public List<NodeItem> GetRoute(Vector3 from, Vector3 to) {
