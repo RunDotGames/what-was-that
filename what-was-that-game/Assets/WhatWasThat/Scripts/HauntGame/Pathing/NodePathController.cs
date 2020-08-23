@@ -45,6 +45,9 @@ public class NodePathController: MonoBehaviour {
     NodeItem nearest = null;
     float minDistance = float.MaxValue;
     foreach(var value in nodes.Values) {
+      if(value.item.isDeactivated){
+        continue;
+      }
       var myDistance = (value.item.transform.position - position).magnitude;
       if(myDistance < minDistance){
         minDistance = myDistance;
@@ -55,6 +58,9 @@ public class NodePathController: MonoBehaviour {
   }
 
   private NodeTraversal GetTraversal(NodeTraversal prior, NodeItem next, NodeItem target) {
+    if(next.isDeactivated){
+      return null;
+    }
     NodeTraversal traversal = prior.Clone();
     
     if(traversal.guids.Count > 0){

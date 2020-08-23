@@ -180,12 +180,9 @@ MonoBehaviour:
   targetRoomCount: 5
   startingRoomAnchor: {fileID: 615353182}
   roomPrefabs:
-  - {fileID: 1636813280141931971, guid: 3adf7ae31e96aed4da654abcdc5bcc53, type: 3}
-  - {fileID: 2611875993901709158, guid: aba2f2a8ba870014abfc5fa2bc08a239, type: 3}
-  - {fileID: 1026831643343221392, guid: 3193d0d17f70c24468df20aae759b4c6, type: 3}
-  - {fileID: 8874722198868706586, guid: 818038185ca654a41947a0f931309e4e, type: 3}
-  startingRoomPrefabFront: {fileID: 1877344565021629107, guid: eff35d617f1c21e4da9bb9f61039e17f, type: 3}
-  startingRoomPrefabBack: {fileID: 6632252077077329885, guid: 44f4a8d67cff6f84b9e9ea5dc0eed10a, type: 3}
+  - {fileID: 8695546025230744700, guid: edeb4f70c541bc645aa29a9ef19b261e, type: 3}
+  startingRoomPrefabFront: {fileID: 8831908556890016308, guid: 2f07fe76e686d0449803d1c7c32b235a, type: 3}
+  startingRoomPrefabBack: {fileID: 5877830391908436615, guid: 4c29f4607f28eae45962f8a6f59e0eff, type: 3}
   solidWallPrefab: {fileID: 5254317515421900118, guid: e59435928711e4542a0ffb041b1e547e, type: 3}
   openWallPrefab: {fileID: 4372797283956092206, guid: 3806088297e764f4fb2616fd4b56bc94, type: 3}
 --- !u!114 &279684547

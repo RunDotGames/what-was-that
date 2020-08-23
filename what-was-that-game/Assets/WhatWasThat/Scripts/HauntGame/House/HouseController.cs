@@ -108,6 +108,10 @@ public class HouseController : MonoBehaviour {
     var offset = RoomFacingUtil.GetOffset(facing);
     var position = new Vector3(x * unitWorldSize, 0, y * unitWorldSize) + (new Vector3(offset.x, 0 , offset.y) * (unitWorldSize/2));
     var wall = GameObject.Instantiate(prefab, position, rotation, startingRoomAnchor.transform);
+    var blocker = wall.GetComponent<MotorBlocker>();
+    if(blocker != null){
+      motorController.AddBlocker(blocker);
+    }
   }
 
   public Transform GetStartingPoint() {
@@ -153,35 +157,42 @@ public class HouseController : MonoBehaviour {
         if(roomState == null) {
           continue;
         }
+
         foreach(var facing in RoomFacingUtil.ALL) {
           if(roomState.wallStates[facing] == WallState.Unknown) {
             var offset = RoomFacingUtil.GetOffset(facing);
             var position = getValidatedPosition(offset.x + x, offset.y + y);
+            var facingOriented = RoomFacingUtil.GetInverseOrientated(facing, roomState.orientation);
+            var anchorForFacing = roomState.room.anchors.Find((anchor) => anchor.facing == facingOriented);
             if(position == INVALID_POS){
               GenerateWall(x, y, WallState.Solid, roomState, facing);
+              anchorForFacing.exitPathPoint.isDeactivated = true;
               continue;
             }
 
             var oppositeRoom = rooms[position.x][position.y];
             if(oppositeRoom == null) {
               GenerateWall(x, y, WallState.Solid, roomState, facing);
+              anchorForFacing.exitPathPoint.isDeactivated = true;
               continue;
             }
-           
-            var facingOriented = RoomFacingUtil.GetInverseOrientated(facing, roomState.orientation);
-            var anchorForFacing = roomState.room.anchors.Find((anchor) => anchor.facing == facingOriented);
+
             var oppositeFacing = RoomFacingUtil.GetOpposite(facing);
+            var oppositeFacingOriented = RoomFacingUtil.GetInverseOrientated(oppositeFacing, oppositeRoom.orientation);
+            var anchorForOppositeFacing = oppositeRoom.room.anchors.Find((anchor) => anchor.facing == oppositeFacingOriented);
             if(!anchorForFacing.allowAttachment){
               GenerateWall(x, y, WallState.Solid, roomState, facing);
               oppositeRoom.wallStates[oppositeFacing] = WallState.Solid;
+              anchorForFacing.exitPathPoint.isDeactivated = true;
+              anchorForOppositeFacing.exitPathPoint.isDeactivated = true;
               continue;
             }
             
-            var oppositeFacingOriented = RoomFacingUtil.GetInverseOrientated(oppositeFacing, oppositeRoom.orientation);
-            var anchorForOppositeFacing = oppositeRoom.room.anchors.Find((anchor) => anchor.facing == oppositeFacingOriented);
             if(!anchorForOppositeFacing.allowAttachment){
               GenerateWall(x, y, WallState.Solid, roomState, facing);
               oppositeRoom.wallStates[oppositeFacing] = WallState.Solid;
+              anchorForFacing.exitPathPoint.isDeactivated = true;
+              anchorForOppositeFacing.exitPathPoint.isDeactivated = true;
               continue;
             }
             

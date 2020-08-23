@@ -11,6 +11,7 @@ public class RoomAnchor {
   public RoomFacing facing;
   public bool allowAttachment;
   public bool allowNoWall;
+  public NodeItem exitPathPoint;
 }
 public class Room : MonoBehaviour, RoomProvider {
   public List<RoomAnchor> anchors;
