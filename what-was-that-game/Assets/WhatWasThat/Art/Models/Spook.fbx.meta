@@ -9,6 +9,9 @@ ModelImporter:
   - first:
       74: -5913978943142729594
     second: Armature|Move
+  - first:
+      74: -7836716543970759766
+    second: Armature|Haunt
   externalObjects:
   - first:
       type: UnityEngine:Material

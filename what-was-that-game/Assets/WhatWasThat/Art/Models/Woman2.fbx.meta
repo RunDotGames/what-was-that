@@ -18,6 +18,12 @@ ModelImporter:
   - first:
       74: 2982955500637902885
     second: rig|walk
+  - first:
+      74: 1176598350811745803
+    second: rig|JumpScare
+  - first:
+      74: 7148951708001098445
+    second: rig|Cower
   externalObjects: {}
   materials:
     materialImportMode: 1

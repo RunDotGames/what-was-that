@@ -23,7 +23,7 @@ public class FreePosition {
   public Vector2Int position;
   public RoomFacing from;
 }
-public class HouseController : MonoBehaviour {
+public class HouseController : MonoBehaviour, HauntPositionTranslator {
 
   
 
@@ -45,6 +45,7 @@ public class HouseController : MonoBehaviour {
   private NodePathController pathController;
   private HauntController hauntController;
   private List<FreePosition> freePositions;
+  private float halfUnitWorldSize;
 
   private Transform startingPoint;
 
@@ -52,6 +53,8 @@ public class HouseController : MonoBehaviour {
     this.motorController = motorController;
     this.pathController = pathController;
     this.hauntController = hauntController;
+    hauntController.SetPositionTranslator(this);
+    this.halfUnitWorldSize = unitWorldSize / 2.0f;
   }
 
   private static readonly Vector2Int INVALID_POS = new Vector2Int(int.MaxValue, int.MaxValue);
@@ -134,6 +137,26 @@ public class HouseController : MonoBehaviour {
   public Transform GetStartingPoint() {
     return startingPoint;
   }
+
+  public Vector2Int GetHauntPosition(Vector3 worldPosition) {
+    var localPosition = startingRoomAnchor.transform.InverseTransformPoint(worldPosition);
+    var x = Math.Ceiling((localPosition.x - halfUnitWorldSize) / unitWorldSize);
+    var y = Math.Ceiling((localPosition.z- halfUnitWorldSize) / unitWorldSize);
+    return new Vector2Int((int)x, (int)y);
+  }
+
+  public List<Vector2> GetConnectedPositions(Vector2Int housePosition){
+    var state = rooms[housePosition.x][housePosition.y];
+    var connected = new List<Vector2>();
+    foreach ( var direction in  state.wallStates.Keys){
+      var wallState = state.wallStates[direction];
+      if(wallState == WallState.Open || wallState == WallState.None) {
+        connected.Add(housePosition + RoomFacingUtil.GetOffset(direction));
+      }
+    }
+    return connected;
+  }
+
   public void Generate(){
     freePositions = new List<FreePosition>();
     rooms = new RoomState[maxX][];

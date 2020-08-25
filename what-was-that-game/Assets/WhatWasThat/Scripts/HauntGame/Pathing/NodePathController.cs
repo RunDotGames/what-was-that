@@ -114,7 +114,6 @@ public class NodePathController: MonoBehaviour {
       bState.to[aItem.guid] = aState;
       aState.to[bItem.guid] = bState;
     }
-    Debug.Log(nodes.Count);
   }
 
   public List<NodeItem> GetRoute(Vector3 from, Vector3 to) {

@@ -86,6 +86,7 @@ MonoBehaviour:
     rotationSpeed: 250
   walkStateName: Walk
   idleStateName: Idle
+  fearAnim: Cower
 --- !u!1 &8968265714902787980
 GameObject:
   m_ObjectHideFlags: 0

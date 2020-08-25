@@ -13,14 +13,16 @@ public class HouseDemo : MonoBehaviour {
 
   public void Start() {
     keyBindings.Init();
-    hauntController.Init();
     cameraController.Init();
     motorController.Init();
+    hauntController.Init();
     houseController.Init(motorController, pathController, hauntController);
     houseController.Generate();
 
+    
+
     player.Init(motorController, cameraController, hauntController, keyBindings);
-    investigator.Init(motorController, pathController);
+    investigator.Init(motorController, pathController, hauntController);
 
     var startingPoint = houseController.GetStartingPoint();
     investigator.transform.position = startingPoint.position;
