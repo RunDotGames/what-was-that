@@ -22,6 +22,10 @@ public class Room : MonoBehaviour, RoomProvider {
     return GetComponentsInChildren<MotorBlocker>();
   }
 
+  public HauntableProvider[] GetHauntProviders(){
+    return GetComponentsInChildren<HauntableProvider>();
+  }
+
   public Room GetRoom() {
       return this;
   }

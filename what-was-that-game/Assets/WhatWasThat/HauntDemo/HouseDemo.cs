@@ -8,14 +8,18 @@ public class HouseDemo : MonoBehaviour {
   public NodePathController pathController;
   public PlayerController player;
   public InvestigatorController investigator;
-  
+  public HauntController hauntController;
+  public KeyBindingsController keyBindings;
+
   public void Start() {
+    keyBindings.Init();
+    hauntController.Init();
     cameraController.Init();
     motorController.Init();
-    houseController.Init(motorController, pathController);
+    houseController.Init(motorController, pathController, hauntController);
     houseController.Generate();
 
-    player.Init(motorController, cameraController);
+    player.Init(motorController, cameraController, hauntController, keyBindings);
     investigator.Init(motorController, pathController);
 
     var startingPoint = houseController.GetStartingPoint();

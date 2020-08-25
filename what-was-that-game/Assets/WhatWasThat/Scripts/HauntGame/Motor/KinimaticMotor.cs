@@ -44,8 +44,9 @@ public class KinimaticMotor {
   private LayerMask groundLayerMask;
   private float groundCheckDistance;
   private float wallCheckDistance;
+  private float wallCheckHeight;
 
-  public KinimaticMotor(KinimaticMotorConfig config, Rigidbody body, DirectionProvider dirProvider, float groundCheckDistance, LayerMask groundLayerMask, float wallCheckDistance) {
+  public KinimaticMotor(KinimaticMotorConfig config, Rigidbody body, DirectionProvider dirProvider, float groundCheckDistance, LayerMask groundLayerMask, float wallCheckDistance, float wallCheckHeight) {
     this.body = body;
     body.isKinematic = false;
     this.config = config;
@@ -53,6 +54,7 @@ public class KinimaticMotor {
     this.groundLayerMask = groundLayerMask;
     this.groundCheckDistance = groundCheckDistance;  
     this.wallCheckDistance = wallCheckDistance;
+    this.wallCheckHeight = wallCheckHeight;
   }
 
 
@@ -81,12 +83,12 @@ public class KinimaticMotor {
 
     foreach (var direction in DIRECTION_MAP.Keys) {
       var directionVector = DIRECTION_MAP[direction];
-      var isBlocked = Physics.Raycast(body.transform.position + Vector3.up * wallCheckDistance, directionVector, wallCheckDistance, groundLayerMask);
+      Debug.DrawRay(body.transform.position + Vector3.up * wallCheckHeight, directionVector*wallCheckDistance, Color.yellow);
+      var isBlocked = Physics.Raycast(body.transform.position + Vector3.up * wallCheckHeight, directionVector, wallCheckDistance, groundLayerMask);
       
       if (!isBlocked) {
         continue;
       }
-      Debug.Log("blocked" + (MotorDirection)direction);
       var compVector = DIRECTION_COMP_MAP[direction];
       compVector.Scale(currentDir);
       if (compVector.normalized == directionVector){

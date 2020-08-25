@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3312492134256021075}
   - component: {fileID: 2493497872997613294}
+  - component: {fileID: 1761735957498439271}
   m_Layer: 0
   m_Name: wall-open
   m_TagString: Untagged
@@ -46,6 +47,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0071ee3984142884186d29bf9f759194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1761735957498439271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372797283956092206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b56b158e95228f940a5b5910125d5756, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aRenderer: {fileID: 2904108108492674546}
 --- !u!1 &4582329746869904802
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,6 +70,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5806273227846962270}
   - component: {fileID: 5535953134371958626}
+  - component: {fileID: 4987677798469866913}
   m_Layer: 0
   m_Name: collider
   m_TagString: Untagged
@@ -90,6 +105,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4987677798469866913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4582329746869904802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bed66dd7314f4ef4eb93c1291f374866, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dimmer: {fileID: 1761735957498439271}
 --- !u!1 &8817638119709317091
 GameObject:
   m_ObjectHideFlags: 0
@@ -100,6 +128,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5252908846298553917}
   - component: {fileID: 3686324958884488205}
+  - component: {fileID: 4191628912744938391}
   m_Layer: 0
   m_Name: collider (1)
   m_TagString: Untagged
@@ -134,6 +163,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4191628912744938391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8817638119709317091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bed66dd7314f4ef4eb93c1291f374866, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dimmer: {fileID: 1761735957498439271}
 --- !u!1001 &4850462470383663143
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -185,6 +227,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 062658d898aaaa646bca4abb253daf09, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: 062658d898aaaa646bca4abb253daf09, type: 3}
       propertyPath: m_Name
       value: WallNoDoor
@@ -194,5 +240,10 @@ PrefabInstance:
 --- !u!4 &444441448378356541 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 062658d898aaaa646bca4abb253daf09, type: 3}
+  m_PrefabInstance: {fileID: 4850462470383663143}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &2904108108492674546 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -1504981713932161579, guid: 062658d898aaaa646bca4abb253daf09, type: 3}
   m_PrefabInstance: {fileID: 4850462470383663143}
   m_PrefabAsset: {fileID: 0}
