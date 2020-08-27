@@ -13,14 +13,14 @@ public class HauntController: MonoBehaviour {
   private List<HauntableItem> items = new List<HauntableItem>();
   private List<HauntResponder> responders = new List<HauntResponder>();
   private GameObject indc;
-  private HauntPositionTranslator translator;
+  private PositionTranslator translator;
 
   public void Init(){
     indc = GameObject.Instantiate(indcPrefab, Vector3.zero, Quaternion.identity, transform.parent);
     indc.SetActive(false);
   }
 
-  public void SetPositionTranslator(HauntPositionTranslator translator){
+  public void SetPositionTranslator(PositionTranslator translator){
     this.translator = translator;
   }
 
@@ -43,11 +43,11 @@ public class HauntController: MonoBehaviour {
     }
 
     nearestItem.HandleHaunt();
-    var hauntPosition = translator.GetHauntPosition(nearestItem.root.position);
+    var hauntPosition = translator.TranslatePosition(nearestItem.root.position);
     var hauntNeighboors = translator.GetConnectedPositions(hauntPosition);
     var hauntEvent = new HauntEvent(){hauntType=HauntType.Unknown, position = nearestItem.root.position};
     foreach (var responder in responders) {
-        var responderPosition = translator.GetHauntPosition(responder.root.position);
+        var responderPosition = translator.TranslatePosition(responder.root.position);
         Debug.Log(responderPosition + " " + hauntPosition);
         var isInSameRoom = hauntPosition == responderPosition;
         if(!hauntNeighboors.Contains(responderPosition) && !isInSameRoom) {

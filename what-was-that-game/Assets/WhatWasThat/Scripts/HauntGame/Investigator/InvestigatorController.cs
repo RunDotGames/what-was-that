@@ -10,10 +10,16 @@ public class InvestigatorController : MonoBehaviour {
   private KinimaticMotor motor;
   private PathDirectionController pather;
   private MotorAnimator motorAnimator;
+  private HouseController house;
 
   private bool isMoving;
 
-  public void Init(KinimaticMotorController motorController, NodePathController nodePath, HauntController hauntController){
+  public void Init(
+    KinimaticMotorController motorController,
+    NodePathController nodePath,
+    HauntController hauntController,
+    HouseController house
+  ){
     var body = GetComponent<Rigidbody>();
     pather = new PathDirectionController(transform, nodePath.GetRoute);
     motor = motorController.GetMotor(motorConfig, body, pather);
@@ -21,6 +27,7 @@ public class InvestigatorController : MonoBehaviour {
     var hauntResponder = new HauntResponder(){root=transform};
     hauntResponder.onRespond += HandleHaunt;
     hauntController.AddResponder(hauntResponder);
+    this.house = house;
   }
 
   public void Update(){
@@ -44,6 +51,17 @@ public class InvestigatorController : MonoBehaviour {
   }
 
   private void HandleHaunt(HauntEvent hauntEvent){
-     GetComponentInChildren<Animator>().Play(fearAnim);
+    motorAnimator.SetIdleAnim(fearAnim);
+    if(!hauntEvent.isInSameRoom){
+      return;
+    }
+
+    var housePosition = house.TranslatePosition(transform.position);
+    var connectedPositions = house.GetConnectedPositions(housePosition);
+    var connectedPosition = connectedPositions[UnityEngine.Random.Range(0, connectedPositions.Count)];
+    var worldPosition = house.TranslateInversePosition(connectedPosition);
+    pather.Navigate(transform.position, worldPosition);
+    
+
   }
 }

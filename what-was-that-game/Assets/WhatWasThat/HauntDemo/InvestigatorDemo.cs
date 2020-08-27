@@ -24,7 +24,7 @@ public class InvestigatorDemo: MonoBehaviour {
     motorController.Init();
     player.Init(motorController, cameraController, hauntController, keyBindings);
     foreach(var investigator in investigators) {
-      investigator.Init(motorController, nodePathController, hauntController);
+      investigator.Init(motorController, nodePathController, hauntController, null);
     }
     foreach(var floor in floors) {
       motorController.AddBlocker(floor);

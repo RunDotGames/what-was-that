@@ -23,7 +23,7 @@ public class FreePosition {
   public Vector2Int position;
   public RoomFacing from;
 }
-public class HouseController : MonoBehaviour, HauntPositionTranslator {
+public class HouseController : MonoBehaviour, PositionTranslator {
 
   
 
@@ -138,16 +138,23 @@ public class HouseController : MonoBehaviour, HauntPositionTranslator {
     return startingPoint;
   }
 
-  public Vector2Int GetHauntPosition(Vector3 worldPosition) {
+
+  public Vector3 TranslateInversePosition(Vector2Int translatedPosition) {
+    var x = translatedPosition.x * unitWorldSize;
+    var z = translatedPosition.y * unitWorldSize;
+    return startingRoomAnchor.transform.TransformPoint(new Vector3(x, 0, z));
+  }
+
+  public Vector2Int TranslatePosition(Vector3 worldPosition) {
     var localPosition = startingRoomAnchor.transform.InverseTransformPoint(worldPosition);
     var x = Math.Ceiling((localPosition.x - halfUnitWorldSize) / unitWorldSize);
     var y = Math.Ceiling((localPosition.z- halfUnitWorldSize) / unitWorldSize);
     return new Vector2Int((int)x, (int)y);
   }
 
-  public List<Vector2> GetConnectedPositions(Vector2Int housePosition){
+  public List<Vector2Int> GetConnectedPositions(Vector2Int housePosition){
     var state = rooms[housePosition.x][housePosition.y];
-    var connected = new List<Vector2>();
+    var connected = new List<Vector2Int>();
     foreach ( var direction in  state.wallStates.Keys){
       var wallState = state.wallStates[direction];
       if(wallState == WallState.Open || wallState == WallState.None) {

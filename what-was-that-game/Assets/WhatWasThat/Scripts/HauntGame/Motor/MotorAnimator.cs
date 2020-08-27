@@ -17,8 +17,14 @@ public class MotorAnimator {
     anim.Play(idleAnimation);
   }
 
+  public void SetIdleAnim(string idleAnimName){
+    this.idleAnimation = idleAnimName;
+    if(!isMoving){
+      animator.Play(idleAnimName);
+    }
+  }
   public void Update(){
-  var direction = directionProvider.GetDirection();
+    var direction = directionProvider.GetDirection();
     var wasMoving = isMoving;
     isMoving = direction.magnitude > 0;
     if(isMoving && !wasMoving){

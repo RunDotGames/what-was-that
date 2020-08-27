@@ -22,7 +22,7 @@ public class HouseDemo : MonoBehaviour {
     
 
     player.Init(motorController, cameraController, hauntController, keyBindings);
-    investigator.Init(motorController, pathController, hauntController);
+    investigator.Init(motorController, pathController, hauntController, houseController);
 
     var startingPoint = houseController.GetStartingPoint();
     investigator.transform.position = startingPoint.position;
