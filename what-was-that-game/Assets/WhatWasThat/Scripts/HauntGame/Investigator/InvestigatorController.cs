@@ -118,6 +118,9 @@ public class InvestigatorController : MonoBehaviour {
   public void Update(){
     pather.Update();
     motorAnimator.Update();
+    if(isPaniced){
+      Debug.Log(Math.Abs((transform.position - entrance).magnitude));
+    }
     if(isPaniced && Math.Abs((transform.position - entrance).magnitude) < .2 ){
       OnEscape?.Invoke();
     }

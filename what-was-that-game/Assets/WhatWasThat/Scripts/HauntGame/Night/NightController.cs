@@ -8,11 +8,11 @@ public class NightController : MonoBehaviour {
   public NightInterface uiPrefab;
   public int investigatorCount;
   public int reactionCount;
+  public int fleeCount;
   public InvestigatorController investigatorPrefab;
   public GameObject[] investigatorModels;
   public PlayerController playerPrefab;
-  public int fleeBuckets = 1;
-  public int approachBuckets = 1;
+  
   public float offsetDistance;
   public float fearTarget = 1.0f;
   private ActionLockController actionLock;
@@ -109,7 +109,7 @@ public class NightController : MonoBehaviour {
       if(reaction.haunt == HauntType.Unknown){
         break;
       }
-      reaction.reaction = UnityEngine.Random.Range(-fleeBuckets, approachBuckets+1) > 0 ? FearReaction.Flee : FearReaction.Approach;
+      reaction.reaction = index < fleeCount ? FearReaction.Flee : FearReaction.Approach;
       investigator.reactions.Add(reaction);
       
     }

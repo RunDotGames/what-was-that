@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/WhatWasThat/Night/NightScene.unity
+    guid: f4d9033dd61a2f3489884314ae4d135d
   m_configObjects: {}
