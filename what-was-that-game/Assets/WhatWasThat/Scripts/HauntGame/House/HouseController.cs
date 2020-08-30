@@ -6,6 +6,7 @@ public enum WallState {
   Unknown, Solid, Open, None
 }
 public class RoomState {
+  public bool isStarting;
   public Room room;
   public RoomFacing orientation;
   public int x;
@@ -50,6 +51,7 @@ public class HouseController : MonoBehaviour, PositionTranslator {
   private float halfUnitWorldSize;
 
   private Transform startingPoint;
+  private Transform entrancePoint;
 
   public void Init(
     KinimaticMotorController motorController,
@@ -173,7 +175,35 @@ public class HouseController : MonoBehaviour, PositionTranslator {
   }
 
   public Vector3 GetEntrance(){
-    return startingRoomAnchor.transform.position - Vector3.back * (unitWorldSize/2.0f);
+    return entrancePoint.position;
+  }
+
+  private List<Room> GetShuffledPrefabs(){
+    List<Room> dup = new List<Room>();
+    foreach (var room in roomPrefabs) {
+        dup.Add(room);
+    }
+    List<Room> shuffled = new List<Room>();
+    for(var i = 0; i < roomPrefabs.Length; i++){
+      var removeIndex = UnityEngine.Random.Range(0, dup.Count);
+      shuffled.Add(dup[removeIndex]);
+      dup.RemoveAt(removeIndex);
+    }
+    return shuffled;
+  }
+
+  internal Vector2Int[] GetNonStartingRooms() {
+      List<Vector2Int> positions = new List<Vector2Int>();
+      for(int x = 0; x < maxX; x++){
+        for(int y = 0; y < maxY; y++){
+          var room = rooms[x][y];
+          if(room == null || room.isStarting){
+            continue;
+          }
+          positions.Add(new Vector2Int(x,y));
+        }
+      }
+      return positions.ToArray();
   }
 
   public void Generate(){
@@ -187,16 +217,25 @@ public class HouseController : MonoBehaviour, PositionTranslator {
     startingRoom.neverDim = true;
     var startingRoomComp = startingRoom.room.gameObject.GetComponent<StartingRoom>();
     startingPoint = startingRoomComp.startingPoint;
-    AddRoom(startingRoomPrefabBack, maxX/2 + maxX%2, 1, RoomFacing.South);
+    entrancePoint = startingRoomComp.entrancePoint;
+    var backStartingRoom = AddRoom(startingRoomPrefabBack, maxX/2 + maxX%2, 1, RoomFacing.South);
+    startingRoom.isStarting = true;
+    backStartingRoom.isStarting = true;
+
+    List<Room> roomShuffle = null;
     for (var index = 0; index < targetRoomCount; index++){
       if (freePositions.Count <= 0) {
         break;
       }
-      var prefabIndex = UnityEngine.Random.Range(0, roomPrefabs.Length);
       var positionIndex = UnityEngine.Random.Range(0, freePositions.Count);
       var orientation = (RoomFacing)UnityEngine.Random.Range(0, (int)RoomFacing.West+1);
       var position = freePositions[positionIndex];
-      var roomPrefab = roomPrefabs[prefabIndex];
+      if(roomShuffle == null || roomShuffle.Count == 0){
+        roomShuffle = GetShuffledPrefabs();
+      }
+      var roomPrefab = roomShuffle[roomShuffle.Count - 1];
+      roomShuffle.RemoveAt(roomShuffle.Count-1);
+
       var mustRotate = true;
       while(mustRotate) {
         var orientatedFrom = RoomFacingUtil.GetInverseOrientated(position.from, orientation);

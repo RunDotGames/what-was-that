@@ -26,16 +26,17 @@ public class HauntController: MonoBehaviour {
   private PositionTranslator translator;
   private HauntType indcType = HauntType.Unknown;
   private Dictionary<HauntType, HauntIconConfig> iconMap = new Dictionary<HauntType, HauntIconConfig>();
+  private ActionLockController actionLockController;
 
-  public void Init(){
-    
+  public void Init(ActionLockController actionLockController){
+    this.actionLockController = actionLockController;
     foreach (var config in iconConfigs){
         iconMap[config.hauntType] = config;
     }
 
     indc = GameObject.Instantiate(indcPrefab, Vector3.zero, Quaternion.identity, transform.parent);
     indc.gameObject.SetActive(false);
-    ActionLockController.OnLock += HandleLock;
+    actionLockController.OnLock += HandleLock;
   }
 
   public void SetPositionTranslator(PositionTranslator translator){
@@ -104,7 +105,7 @@ public class HauntController: MonoBehaviour {
   }
 
   public void Update(){
-    if(ActionLockController.IsLocked()){
+    if(actionLockController.IsLocked()){
       return;
     }
     if(indc == null){

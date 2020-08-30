@@ -64,6 +64,7 @@ public class InvestigatorUI : MonoBehaviour{
     }
 
     float percent = actor.GetCurrentFear() / actor.maxFear;
+    Debug.Log(actor.GetCurrentFear());
     var percentClamped = Math.Max(percent, minFearShow);
     image.rectTransform.anchorMax = new Vector2(percentClamped, 1.0f);
     image.color = Color.Lerp(fillStartColor, fillEndColor, percentClamped);

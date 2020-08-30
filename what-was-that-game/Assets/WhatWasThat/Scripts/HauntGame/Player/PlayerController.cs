@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour {
   public float dimRadius = 7;
 
   private KinimaticMotor motor;
+  private ActionLockController actionLockController;
   private InputDirectionController directionInput;
   private MotorAnimator motorAnimator;
   private Haunter haunter;
@@ -16,6 +17,7 @@ public class PlayerController : MonoBehaviour {
   private ProximityDimmer dimmer;
   private bool canBuild;
   private BarrierBuilder builder;
+  private bool allowInput;
 
 
   public void Init(
@@ -23,9 +25,11 @@ public class PlayerController : MonoBehaviour {
     CameraController cameraController, 
     HauntController hauntController, 
     KeyBindingsController keyBindings,
-    BarrierController barrierController
+    BarrierController barrierController,
+    ActionLockController actionLockController
   ) {
     var body = GetComponentInChildren<Rigidbody>();
+    this.actionLockController = actionLockController;
     directionInput = new InputDirectionController(keyBindings);
     motor = motorController.GetMotor(motorConfig, body, directionInput);
     motorAnimator = new MotorAnimator(directionInput, GetComponentInChildren<Animator>(), walkStateName, idleStateName);
@@ -36,6 +40,10 @@ public class PlayerController : MonoBehaviour {
     dimmer = new ProximityDimmer(){root=transform, radius= dimRadius};
     builder = new BarrierBuilder(){root=transform};
     barrierController?.SetBuilder(builder);
+  }
+
+  public void SetAllowInput(bool allowInput){
+    this.allowInput = allowInput;
   }
 
   private void HandleCanBuild(){
@@ -50,20 +58,23 @@ public class PlayerController : MonoBehaviour {
       return;
     }
     dimmer.Update();
-    directionInput.Update();
+    if(allowInput){
+      directionInput.Update();
+    }
+    
     motorAnimator.Update();
 
-    if(ActionLockController.IsLocked()){
+    if(actionLockController.IsLocked()){
       return;
     }
 
-    if(Input.GetKeyUp(interactKey)){
+    if(allowInput && Input.GetKeyUp(interactKey)){
       if(builder.IsIndicating()){
         builder.RequestBuild();
       } else {
         haunter.TriggerHaunt();
       }
-      ActionLockController.Lock();
+      actionLockController.Lock();
     }
   }
 

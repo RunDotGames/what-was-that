@@ -13,10 +13,12 @@ public class PathDirectionController : DirectionProvider {
   private int currentIndex;
   private Transform root;
   private ProvideRoute GetRoute;
+  private Vector3 finalOffset;
   
-  public PathDirectionController(Transform root, ProvideRoute GetRoute) {
+  public PathDirectionController(Transform root, ProvideRoute GetRoute, Vector3 finalOffset) {
     this.root = root;
     this.GetRoute = GetRoute;
+    this.finalOffset = finalOffset;
   }
 
   public void Navigate(Vector3 from, Vector3 to) {
@@ -32,7 +34,7 @@ public class PathDirectionController : DirectionProvider {
     if(route == null) {
       return;
     }
-    var towards = (route[currentIndex].transform.position - root.position);
+    var towards = GetGoingTo() - root.position;
     towards.Scale(level);
     if(towards.magnitude < .1f) {
       currentIndex++;
@@ -51,8 +53,18 @@ public class PathDirectionController : DirectionProvider {
     if(route == null) {
       return Vector3.zero;
     }
-    var going = (route[currentIndex].transform.position - root.transform.position);
+    
+    var going = (GetGoingTo() - root.transform.position);
     going.Scale(level);
+    
     return going.normalized;
+  }
+
+  private Vector3 GetGoingTo(){
+    Vector3 goingTo = route[currentIndex].transform.position;
+    if(currentIndex == route.Count -1){
+      goingTo = goingTo + finalOffset;
+    }
+    return goingTo;
   }
 }

@@ -7,6 +7,8 @@ public class NodeItem : MonoBehaviour {
 
   public bool isDeactivated;
 
+  
+
 
 
 }

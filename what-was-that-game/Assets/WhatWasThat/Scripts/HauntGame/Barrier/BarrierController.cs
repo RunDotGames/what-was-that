@@ -22,10 +22,12 @@ public class BarrierController : MonoBehaviour {
   private GameObject indicator;
   private BarrierPoint nearestToBuilder;
   private Coroutine indcRoutine;
-  private bool indcShow;  
+  private bool indcShow;
+  private ActionLockController actionLockController;
 
-  public void Init(){
-    ActionLockController.OnLock += HandleLock;
+  public void Init(ActionLockController actionLockController){
+    this.actionLockController = actionLockController;
+    actionLockController.OnLock += HandleLock;
     indicator = GameObject.Instantiate(indicatePrefab, Vector3.zero, Quaternion.identity, transform);
     indicator.SetActive(false);
     indicator.transform.localScale = Vector3.zero;
@@ -80,7 +82,7 @@ public class BarrierController : MonoBehaviour {
   }
 
   private void UpdateBuilder(){
-    if(ActionLockController.IsLocked()){
+    if(actionLockController.IsLocked()){
       return;
     }
     if(builder == null){
@@ -137,7 +139,7 @@ public class BarrierController : MonoBehaviour {
   }
 
   public void AddPoint(BarrierPoint point){
-    point.Init(this, blockPrefab, blockHeight, maxBlock, spawnTime, blockOffset);
+    point.Init(actionLockController, this, blockPrefab, blockHeight, maxBlock, spawnTime, blockOffset);
     points.Add(point);
   }
 

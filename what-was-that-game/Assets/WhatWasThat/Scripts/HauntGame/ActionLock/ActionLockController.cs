@@ -4,18 +4,20 @@ using System.Collections.Generic;
 
 public class ActionLockController {
 
-  private static bool isLocked;
+  private bool isLocked;
 
-  public static event Action OnLock;
-  public static event Action OnUnlock;
+  public event Action OnLock;
+  public event Action OnUnlock;
 
-  private static List<string> lockActions = new List<string>();
+  private List<string> lockActions = new List<string>();
 
-  public static bool IsLocked(){
+  private static ActionLockController instance;
+
+  public bool IsLocked(){
     return isLocked;
   }
 
-  public static void Lock(){
+  public void Lock(){
     if(isLocked){
       return;
     }
@@ -23,13 +25,13 @@ public class ActionLockController {
     OnLock?.Invoke();
   }
 
-  public static Guid AddLockAction(){
+  public Guid AddLockAction(){
     var guid = Guid.NewGuid();
     lockActions.Add(guid.ToString());
     return guid;
   }
 
-  public static void ReleaseLockAction(Guid guid){
+  public void ReleaseLockAction(Guid guid){
     lockActions.Remove(guid.ToString());
     if(!isLocked){
       return;

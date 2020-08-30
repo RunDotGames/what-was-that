@@ -12,22 +12,21 @@ public class HouseDemo : MonoBehaviour {
   public HauntController hauntController;
   public KeyBindingsController keyBindings;
   public BarrierController barrierController;
-  public NightController nightController;
-
+  
   public void Start() {
-    nightController.Init();
-    barrierController.Init();
+    var actionLock = new ActionLockController();
+    barrierController.Init(actionLock);
     fearController.Init();
     keyBindings.Init();
     cameraController.Init();
     motorController.Init();
-    hauntController.Init();
+    hauntController.Init(actionLock);
     houseController.Init(motorController, pathController, hauntController, barrierController);
 
     houseController.Generate();
 
-    player.Init(motorController, cameraController, hauntController, keyBindings, barrierController);
-    investigator.Init(motorController, pathController, hauntController, houseController, fearController, barrierController);
+    player.Init(motorController, cameraController, hauntController, keyBindings, barrierController, actionLock);
+    investigator.Init(motorController, pathController, hauntController, houseController, fearController, barrierController, actionLock);
 
     var startingPoint = houseController.GetStartingPoint();
     investigator.transform.position = startingPoint.position;

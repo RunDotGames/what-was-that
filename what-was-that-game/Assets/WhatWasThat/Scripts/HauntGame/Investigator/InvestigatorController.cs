@@ -11,6 +11,8 @@ public class HauntReaction {
 
 
 public class InvestigatorController : MonoBehaviour {
+  public event Action OnEscape;
+  public Transform modelRoot;
   private static readonly Vector3 INVALID_DESTINATION = Vector3.one * float.MaxValue;  
   public float maxFear;
   public string walkStateName;
@@ -22,15 +24,19 @@ public class InvestigatorController : MonoBehaviour {
   public string fearBreakDownAnim;
   public KinimaticMotorConfig motorConfig;
   public List<HauntReaction> reactions;
-  public Animator animator;
+  public Vector3 finalOffset;
+  
   public InvestigatorUI ui;
 
   private KinimaticMotor motor;
+  private Animator animator;
   private PathDirectionController pather;
   private MotorAnimator motorAnimator;
   private HouseController house;
   private FearActor fearActor;
   private BarrierBlockable blockable;
+  private bool isPaniced;
+  private Vector3 entrance;
 
   private Dictionary<HauntType, HauntReaction> reactionMap = new Dictionary<HauntType, HauntReaction>();
   
@@ -40,19 +46,23 @@ public class InvestigatorController : MonoBehaviour {
   private Action traverseEvent;
   private Vector3 traverseDestination = INVALID_DESTINATION;
   private string currentBlockAnim;
+  private ActionLockController actionLockController;
 
-  public void Init(
+    public void Init(
     KinimaticMotorController motorController,
     NodePathController nodePath,
     HauntController hauntController,
     HouseController house,
     FearController fearController,
-    BarrierController barrierController
+    BarrierController barrierController,
+    ActionLockController actionLockController
   ){
-    ActionLockController.OnLock += HandleActionLock;
+    this.actionLockController = actionLockController;
+    actionLockController.OnLock += HandleActionLock;
     var body = GetComponent<Rigidbody>();
-    pather = new PathDirectionController(transform, nodePath.GetRoute);
+    pather = new PathDirectionController(transform, nodePath.GetRoute, finalOffset);
     motor = motorController.GetMotor(motorConfig, body, pather);
+    animator = modelRoot.GetComponentInChildren<Animator>();
     motorAnimator = new MotorAnimator(pather, animator, walkStateName, idleStateName);
     var hauntResponder = new HauntResponder(){root=transform};
     hauntResponder.onRespond += HandleHaunt;
@@ -75,6 +85,7 @@ public class InvestigatorController : MonoBehaviour {
     currentBlockAnim = breakDownAnim;
 
     ui.Init(reactions, fearActor, hauntController);
+    entrance = house.GetEntrance();
   }
 
   private void HandleActionLock(){
@@ -92,6 +103,7 @@ public class InvestigatorController : MonoBehaviour {
 
   private void HandlePanic(FearActor actor){
     UpdateBreakdownAnim(true);
+    isPaniced = true;
     currentBlockAnim = fearBreakDownAnim;
     motorAnimator.SetIdleAnim(fearAnim);
     motorAnimator.SetWalkAnim(runAnim);
@@ -106,6 +118,9 @@ public class InvestigatorController : MonoBehaviour {
   public void Update(){
     pather.Update();
     motorAnimator.Update();
+    if(isPaniced && Math.Abs((transform.position - entrance).magnitude) < .2 ){
+      OnEscape?.Invoke();
+    }
     
   }
 
@@ -147,7 +162,7 @@ public class InvestigatorController : MonoBehaviour {
 
   private void CancelTraversal(){
     if(traverseLock != Guid.Empty){
-      ActionLockController.ReleaseLockAction(traverseLock);
+      actionLockController.ReleaseLockAction(traverseLock);
       traverseLock = Guid.Empty;
       pather.OnArrival -= traverseEvent;
       pather.Cancel();
@@ -163,15 +178,18 @@ public class InvestigatorController : MonoBehaviour {
       return;
     }
     pather.Navigate(transform.position, traverseDestination);
-    traverseLock = ActionLockController.AddLockAction();
+    traverseLock = actionLockController.AddLockAction();
     traverseEvent = () => {
-      ActionLockController.ReleaseLockAction(traverseLock);
+      actionLockController.ReleaseLockAction(traverseLock);
       pather.OnArrival-= traverseEvent;
     };
     pather.OnArrival += traverseEvent;
   }
 
   private void HandleHaunt(HauntEvent hauntEvent){
+    if(isPaniced){
+      return;
+    }
     var reaction = reactionMap[hauntEvent.hauntType];
     traverseDestination = fearActor.HandleFear(hauntEvent.fear, reaction.reaction, hauntEvent.position);
     if(traverseDestination == transform.position){

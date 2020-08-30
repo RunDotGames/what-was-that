@@ -14,7 +14,7 @@ public class BarrierPoint {
   private float spawnTime;
   private MonoBehaviour parent;
   private float blockOffset;
-
+  private ActionLockController actionLockController;
   private List<GameObject> blockers = new List<GameObject>();
 
   private List<BarrierBlockable> blockables = new List<BarrierBlockable>();
@@ -38,7 +38,7 @@ public class BarrierPoint {
     return maxBlock;
   }
 
-  public void Init(MonoBehaviour parent, GameObject blockPrefab, float blockHeight, int maxBlock, float spawnTime, float blockOffset){
+  public void Init(ActionLockController actionLockController, MonoBehaviour parent, GameObject blockPrefab, float blockHeight, int maxBlock, float spawnTime, float blockOffset){
     this.blockPrefab = blockPrefab;
     blockCount = 0;
     this.maxBlock = maxBlock;
@@ -46,6 +46,7 @@ public class BarrierPoint {
     this.parent = parent;
     this.spawnTime = spawnTime;
     this.blockOffset = blockOffset;
+    this.actionLockController = actionLockController;
   }
 
   public void AddBlock(){
@@ -83,7 +84,7 @@ public class BarrierPoint {
   }
 
   private IEnumerator<YieldInstruction> SpawnOut(GameObject blocker){
-    var aLock = ActionLockController.AddLockAction();
+    var aLock = actionLockController.AddLockAction();
     var duration = 0.0f;
     while(duration < spawnTime){
       duration = duration + Time.deltaTime;
@@ -92,11 +93,11 @@ public class BarrierPoint {
       yield return new WaitForEndOfFrame();
     }
     GameObject.Destroy(blocker);
-    ActionLockController.ReleaseLockAction(aLock);
+    actionLockController.ReleaseLockAction(aLock);
   }
 
   private IEnumerator<YieldInstruction> SpawnIn(GameObject blocker){
-    var aLock = ActionLockController.AddLockAction();
+    var aLock = actionLockController.AddLockAction();
     var duration = 0.0f;
     while(duration < spawnTime){
       duration = duration + Time.deltaTime;
@@ -104,7 +105,7 @@ public class BarrierPoint {
       blocker.transform.localScale = scale;
       yield return new WaitForEndOfFrame();
     }
-    ActionLockController.ReleaseLockAction(aLock);
+    actionLockController.ReleaseLockAction(aLock);
     blocker.transform.localScale = Vector3.one;
   }
 
