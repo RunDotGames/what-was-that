@@ -24,6 +24,12 @@ ModelImporter:
   - first:
       74: 7148951708001098445
     second: rig|Cower
+  - first:
+      74: -4745180312770837856
+    second: rig|Panic Knock
+  - first:
+      74: -5861323821492947588
+    second: rig|Panic Knock Extreme
   externalObjects: {}
   materials:
     materialImportMode: 1

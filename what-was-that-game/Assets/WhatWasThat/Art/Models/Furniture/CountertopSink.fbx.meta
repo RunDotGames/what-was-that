@@ -3,7 +3,17 @@ guid: 6675aefd2d1ca3e42b75d3c637761558
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Countertop
+    second: {fileID: 2100000, guid: 352fb61405d0a4443ba955b5ee8fbc58, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Handles
+    second: {fileID: 2100000, guid: e544b330194b7334892711c662cb5a8f, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0

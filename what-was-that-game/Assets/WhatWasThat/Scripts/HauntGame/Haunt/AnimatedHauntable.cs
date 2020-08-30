@@ -2,14 +2,17 @@ using UnityEngine;
 
 public class AnimatedHauntable : MonoBehaviour, HauntableProvider {
 
-  public Transform indicatorAnchor;
+  public HauntType hauntType;
+  public float fear;
   public string animName;
   public Animator animator;
-
+  
+  
   public HauntableItem GetHauntable(){
       var item = new HauntableItem(){
-        indcAnchor = indicatorAnchor,
         root = gameObject.transform,
+        hauntType=hauntType,
+        fear=fear,
       };
       item.onHaunt += HandleHaunt;
       return item;

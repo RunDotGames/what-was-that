@@ -1,3 +1,3 @@
 public enum HauntType {
-  Unknown
+  Lights, Posess, Explosion, Levitate, Unknown
 }

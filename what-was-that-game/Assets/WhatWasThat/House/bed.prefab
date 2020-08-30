@@ -28,7 +28,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5773252063505231632}
+  - {fileID: 4834179877558487590}
   - {fileID: 6310685834988124808}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -70,8 +70,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6310685834988124809}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.1815666, y: 1.655, z: 0.061}
-  m_LocalScale: {x: 1, y: 3.796875, z: 5.7375}
+  m_LocalPosition: {x: 1.93, y: 1.655, z: -1.2}
+  m_LocalScale: {x: 7.5570316, y: 3.796875, z: 5.7375}
   m_Children: []
   m_Father: {fileID: 6310685833654687569}
   m_RootOrder: 1
@@ -89,17 +89,68 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &8559120654327963536
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4834179877558487590}
+  - component: {fileID: 959566915504033856}
+  m_Layer: 0
+  m_Name: contents
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4834179877558487590
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8559120654327963536}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 5773252063505231632}
+  m_Father: {fileID: 6310685833654687569}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &959566915504033856
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8559120654327963536}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f98935cc52ee928488a6515f94869577, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &6310685833766127867
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 6310685833654687569}
+    m_TransformParent: {fileID: 4834179877558487590}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 6f4c91ac69290714eb9f486ef54374bf,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.773
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6f4c91ac69290714eb9f486ef54374bf,
         type: 3}
@@ -109,7 +160,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 6f4c91ac69290714eb9f486ef54374bf,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.255
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6f4c91ac69290714eb9f486ef54374bf,
         type: 3}

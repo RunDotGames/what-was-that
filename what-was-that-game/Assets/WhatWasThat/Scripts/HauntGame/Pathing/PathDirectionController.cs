@@ -1,15 +1,19 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public delegate List<NodeItem> ProvideRoute(Vector3 from, Vector3 to);
 
 public class PathDirectionController : DirectionProvider {
+  
+  public event Action OnArrival;
+
   private static Vector3 level = new Vector3(1, 0 ,1);
   private List<NodeItem> route;
   private int currentIndex;
   private Transform root;
   private ProvideRoute GetRoute;
-
+  
   public PathDirectionController(Transform root, ProvideRoute GetRoute) {
     this.root = root;
     this.GetRoute = GetRoute;
@@ -21,7 +25,6 @@ public class PathDirectionController : DirectionProvider {
       Debug.Log("unroutable");
       route = null;
     }
-    Debug.Log("route len " + route.Count);
     currentIndex = 0;
   }
 
@@ -35,8 +38,13 @@ public class PathDirectionController : DirectionProvider {
       currentIndex++;
     }
     if(currentIndex >= route.Count){
+      OnArrival?.Invoke();
       route = null;
     }
+  }
+
+  public void Cancel(){
+    route = null;
   }
 
   public Vector3 GetDirection(){

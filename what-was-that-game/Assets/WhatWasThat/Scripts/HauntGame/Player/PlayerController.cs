@@ -12,10 +12,19 @@ public class PlayerController : MonoBehaviour {
   private InputDirectionController directionInput;
   private MotorAnimator motorAnimator;
   private Haunter haunter;
-  private KeyCode hauntKey;
+  private KeyCode interactKey;
   private ProximityDimmer dimmer;
+  private bool canBuild;
+  private BarrierBuilder builder;
 
-  public void Init(KinimaticMotorController motorController, CameraController cameraController, HauntController hauntController, KeyBindingsController keyBindings) {
+
+  public void Init(
+    KinimaticMotorController motorController, 
+    CameraController cameraController, 
+    HauntController hauntController, 
+    KeyBindingsController keyBindings,
+    BarrierController barrierController
+  ) {
     var body = GetComponentInChildren<Rigidbody>();
     directionInput = new InputDirectionController(keyBindings);
     motor = motorController.GetMotor(motorConfig, body, directionInput);
@@ -23,10 +32,19 @@ public class PlayerController : MonoBehaviour {
     cameraController.Follow(transform);
     haunter = new Haunter(){root=transform};
     hauntController?.AddHaunter(haunter);
-    hauntKey = keyBindings.GetKey(KeyAction.Haunt);
+    interactKey = keyBindings.GetKey(KeyAction.Interact);
     dimmer = new ProximityDimmer(){root=transform, radius= dimRadius};
+    builder = new BarrierBuilder(){root=transform};
+    barrierController?.SetBuilder(builder);
   }
 
+  private void HandleCanBuild(){
+    canBuild = true;
+  }
+
+  private void HandleNoBuild(){
+    canBuild = false;
+  }
   void Update() {
     if(directionInput == null ){
       return;
@@ -35,8 +53,17 @@ public class PlayerController : MonoBehaviour {
     directionInput.Update();
     motorAnimator.Update();
 
-    if(Input.GetKeyUp(hauntKey)){
-      haunter.TriggerHaunt();
+    if(ActionLockController.IsLocked()){
+      return;
+    }
+
+    if(Input.GetKeyUp(interactKey)){
+      if(builder.IsIndicating()){
+        builder.RequestBuild();
+      } else {
+        haunter.TriggerHaunt();
+      }
+      ActionLockController.Lock();
     }
   }
 

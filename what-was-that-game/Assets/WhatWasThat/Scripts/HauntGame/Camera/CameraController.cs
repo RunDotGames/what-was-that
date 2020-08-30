@@ -9,8 +9,9 @@ public class CameraController : MonoBehaviour {
     public Vector3 followOffset;
 
     private Transform toFollow;
-    
-    private Camera controlled;
+    private static Camera controlled;
+
+
     public void Init(){
         controlled = GameObject.Instantiate(cameraPrefab, Vector3.zero, Quaternion.identity, transform.parent);
         controlled.enabled = false;
@@ -29,5 +30,12 @@ public class CameraController : MonoBehaviour {
         }
         controlled.transform.position = toFollow.transform.position + followOffset;
         controlled.transform.LookAt(toFollow, Vector3.up);
+    }
+
+    public static Transform GetRoot(){
+        if(controlled == null){
+            return null;
+        }
+        return controlled.transform;
     }
 }

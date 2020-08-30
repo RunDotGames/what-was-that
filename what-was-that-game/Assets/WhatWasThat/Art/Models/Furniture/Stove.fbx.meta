@@ -7,8 +7,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: ScreenOff
+    second: {fileID: 2100000, guid: aa472e58a1ade924389f6dd431db04fd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Stove
     second: {fileID: 2100000, guid: 0575473338ff4e24cab018748a776dbe, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TV
+    second: {fileID: 2100000, guid: 7f01d7bc1d4c8424fb3ae5943afbb130, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0

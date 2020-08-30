@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 public enum KeyAction {
-  MoveLeft=0, MoveRight=1, MoveForward=2, MoveBack=3, Haunt=4
+  MoveLeft=0, MoveRight=1, MoveForward=2, MoveBack=3, Interact=4
 }
 
 [Serializable]

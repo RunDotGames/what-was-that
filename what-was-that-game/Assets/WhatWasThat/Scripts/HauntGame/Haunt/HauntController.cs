@@ -1,23 +1,41 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
+using UnityEngine.UI;
 
+[Serializable]
+public class HauntIconConfig {
+  public HauntType hauntType;
+  public Sprite image;
+  
+}
 
 public class HauntController: MonoBehaviour {
 
   public float interactionDistance;
-  public GameObject indcPrefab;
+  public HauntIndicator indcPrefab;
   public GameObject possibleIndcPrefab;
+  public float indcHeight = 4;
+  public List<HauntIconConfig> iconConfigs;
 
   private HauntableItem nearestItem;
   private Haunter haunter;
   private List<HauntableItem> items = new List<HauntableItem>();
   private List<HauntResponder> responders = new List<HauntResponder>();
-  private GameObject indc;
+  private HauntIndicator indc;
   private PositionTranslator translator;
+  private HauntType indcType = HauntType.Unknown;
+  private Dictionary<HauntType, HauntIconConfig> iconMap = new Dictionary<HauntType, HauntIconConfig>();
 
   public void Init(){
+    
+    foreach (var config in iconConfigs){
+        iconMap[config.hauntType] = config;
+    }
+
     indc = GameObject.Instantiate(indcPrefab, Vector3.zero, Quaternion.identity, transform.parent);
-    indc.SetActive(false);
+    indc.gameObject.SetActive(false);
+    ActionLockController.OnLock += HandleLock;
   }
 
   public void SetPositionTranslator(PositionTranslator translator){
@@ -41,19 +59,17 @@ public class HauntController: MonoBehaviour {
     if(nearestItem == null){
       return;
     }
-
     nearestItem.HandleHaunt();
     var hauntPosition = translator.TranslatePosition(nearestItem.root.position);
     var hauntNeighboors = translator.GetConnectedPositions(hauntPosition);
-    var hauntEvent = new HauntEvent(){hauntType=HauntType.Unknown, position = nearestItem.root.position};
+    var hauntEvent = new HauntEvent(){hauntType=nearestItem.hauntType, position = nearestItem.root.position, fear=nearestItem.fear};
     foreach (var responder in responders) {
         var responderPosition = translator.TranslatePosition(responder.root.position);
-        Debug.Log(responderPosition + " " + hauntPosition);
         var isInSameRoom = hauntPosition == responderPosition;
         if(!hauntNeighboors.Contains(responderPosition) && !isInSameRoom) {
           continue;
         }
-        responder.Respond(hauntEvent.CloneFor(isInSameRoom));
+        responder.Respond(hauntEvent);
     }
   }
 
@@ -82,14 +98,34 @@ public class HauntController: MonoBehaviour {
     return nearest;
   }
 
+  private void HandleLock(){
+    indc?.gameObject.SetActive(false);
+    nearestItem = null;
+  }
+
   public void Update(){
-    nearestItem = GetNearestItem();
-    if(nearestItem == null){
-      indc.SetActive(false);
+    if(ActionLockController.IsLocked()){
+      return;
+    }
+    if(indc == null){
       return;
     }
 
-    indc.SetActive(true);
-    indc.transform.position = nearestItem.indcAnchor.position;
+    nearestItem = GetNearestItem();
+    if(nearestItem == null){
+      indc.gameObject.SetActive(false);
+      return;
+    }
+
+    indc.gameObject.SetActive(true);
+    if(indcType != nearestItem.hauntType){
+      indcType = nearestItem.hauntType;
+      indc.image.sprite = iconMap[indcType].image;
+    }
+    indc.transform.position = nearestItem.root.position + Vector3.up * indcHeight;
+  }
+
+  public Sprite GetIcon(HauntType type){
+    return iconMap[type].image;
   }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class HouseDemo : MonoBehaviour {
   
+  public FearController fearController;
   public CameraController cameraController;
   public HouseController houseController;
   public KinimaticMotorController motorController;
@@ -10,19 +11,23 @@ public class HouseDemo : MonoBehaviour {
   public InvestigatorController investigator;
   public HauntController hauntController;
   public KeyBindingsController keyBindings;
+  public BarrierController barrierController;
+  public NightController nightController;
 
   public void Start() {
+    nightController.Init();
+    barrierController.Init();
+    fearController.Init();
     keyBindings.Init();
     cameraController.Init();
     motorController.Init();
     hauntController.Init();
-    houseController.Init(motorController, pathController, hauntController);
+    houseController.Init(motorController, pathController, hauntController, barrierController);
+
     houseController.Generate();
 
-    
-
-    player.Init(motorController, cameraController, hauntController, keyBindings);
-    investigator.Init(motorController, pathController, hauntController, houseController);
+    player.Init(motorController, cameraController, hauntController, keyBindings, barrierController);
+    investigator.Init(motorController, pathController, hauntController, houseController, fearController, barrierController);
 
     var startingPoint = houseController.GetStartingPoint();
     investigator.transform.position = startingPoint.position;

@@ -13,8 +13,10 @@ public class InvestigatorDemo: MonoBehaviour {
   public MotorBlocker[] floors;
   public HauntController hauntController;
   public KeyBindingsController keyBindings;
+  public NightController nightController;
 
   public void Start(){
+    nightController.Init();
     keyBindings.Init();
     hauntController.Init();
     cameraController.Init();
@@ -22,9 +24,9 @@ public class InvestigatorDemo: MonoBehaviour {
       nodePathController.AddLinks(linkSet.links);
     }
     motorController.Init();
-    player.Init(motorController, cameraController, hauntController, keyBindings);
+    player.Init(motorController, cameraController, hauntController, keyBindings, null);
     foreach(var investigator in investigators) {
-      investigator.Init(motorController, nodePathController, hauntController, null);
+      investigator.Init(motorController, nodePathController, hauntController, null, null, null);
     }
     foreach(var floor in floors) {
       motorController.AddBlocker(floor);

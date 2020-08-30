@@ -3,7 +3,12 @@ guid: 0a40914a6d8dee941af343a23b7c8b2e
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Vase2
+    second: {fileID: 2100000, guid: 239d3ca2c4152474c845e82ea6049cba, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0

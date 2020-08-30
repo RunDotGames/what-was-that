@@ -44,12 +44,20 @@ public class HouseController : MonoBehaviour, PositionTranslator {
   private KinimaticMotorController motorController;
   private NodePathController pathController;
   private HauntController hauntController;
+  private BarrierController barrierController;
+
   private List<FreePosition> freePositions;
   private float halfUnitWorldSize;
 
   private Transform startingPoint;
 
-  public void Init(KinimaticMotorController motorController, NodePathController pathController, HauntController hauntController){
+  public void Init(
+    KinimaticMotorController motorController,
+    NodePathController pathController,
+    HauntController hauntController,
+    BarrierController barrierController
+  ){
+    this.barrierController = barrierController;
     this.motorController = motorController;
     this.pathController = pathController;
     this.hauntController = hauntController;
@@ -164,6 +172,10 @@ public class HouseController : MonoBehaviour, PositionTranslator {
     return connected;
   }
 
+  public Vector3 GetEntrance(){
+    return startingRoomAnchor.transform.position - Vector3.back * (unitWorldSize/2.0f);
+  }
+
   public void Generate(){
     freePositions = new List<FreePosition>();
     rooms = new RoomState[maxX][];
@@ -250,6 +262,9 @@ public class HouseController : MonoBehaviour, PositionTranslator {
               continue;
             }
             GenerateWall(x, y, WallState.Open, roomState, facing, false);
+            var isHorizontal = facing == RoomFacing.North || facing == RoomFacing.South;
+            var barrierPoint = new BarrierPoint(){anchor=anchorForFacing.exitPathPoint.transform, isHorizontal = isHorizontal};
+            barrierController.AddPoint(barrierPoint);
             oppositeRoom.wallStates[oppositeFacing] = WallState.Open;
           }
         }

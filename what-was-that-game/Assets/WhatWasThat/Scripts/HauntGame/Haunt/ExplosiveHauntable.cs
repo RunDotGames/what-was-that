@@ -2,13 +2,15 @@ using UnityEngine;
 
 public class ExplosiveHauntable : MonoBehaviour, HauntableProvider
 {
-  public Transform indcAnchor;
+  public HauntType hauntType;
+  public float fear;
   public Transform explodePoint;
   public float explodeForce;
   public float explodeRadius;
+  
 
   public HauntableItem GetHauntable() {
-    var item = new HauntableItem(){indcAnchor= indcAnchor, root=transform};
+    var item = new HauntableItem(){root=transform, hauntType=hauntType, fear=fear};
     item.onHaunt += OnHaunt;
     return item;
   }
