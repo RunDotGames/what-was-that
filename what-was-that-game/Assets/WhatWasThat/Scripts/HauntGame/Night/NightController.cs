@@ -46,7 +46,7 @@ public class NightController : MonoBehaviour {
     barrierController.Init(actionLock);
     fearController.Init();
     keyBindings.Init();
-    cameraController.Init();
+    cameraController.Init(actionLock);
     motorController.Init();
     hauntController.Init(actionLock);
     houseController.Init(motorController, pathController, hauntController, barrierController);
@@ -69,6 +69,9 @@ public class NightController : MonoBehaviour {
   }
 
   private void HandleEndOfNight(){
+    if(isEnded){
+      return;
+    }
     isEnded = true;
     player.SetAllowInput(false);
     float fearPercent = fearController.GetCurrentFear() / (fearController.GetMaxFear()*fearTarget);
@@ -119,7 +122,7 @@ public class NightController : MonoBehaviour {
     }
     investigator.OnEscape += HandleEscape;
     investigator.finalOffset = offset;
-    investigator.Init(motorController, pathController, hauntController, houseController, fearController, barrierController, actionLock);
+    investigator.Init(motorController, pathController, hauntController, houseController, fearController, barrierController, actionLock, cameraController);
     investigators.Add(investigator);
   }
 
@@ -133,23 +136,29 @@ public class NightController : MonoBehaviour {
   }
 
   private void StartTheGame(){
-    player.SetAllowInput(true);
     actionLock.Lock();
     actionLock.OnUnlock += HandleInvestigatorsPlaced;
     ui.HideWelcome();
     var roomShuffle = new ShuffleSet<Vector2Int>(houseController.GetNonStartingRooms());
     foreach (var investigator in investigators) {
         var position = roomShuffle.Pop();
-        investigator.GoTo(houseController.TranslateInversePosition(position));
+        investigator.GoTo(houseController.TranslateInversePosition(position), () => {
+          cameraController.RemoveFollowTillUnlock(investigator.transform);
+        });
+        cameraController.FollowTillUnlock(investigator.transform);
     }
   }
 
   private void HandleInvestigatorsPlaced(){
+    player.SetAllowInput(true);
     actionLock.OnUnlock -= HandleInvestigatorsPlaced;
     ui.StartTracking();
   }
 
   public void Update(){
+    if(Input.GetKeyUp(KeyCode.Escape)){
+      Application.Quit();
+    }
     if(Input.GetKeyUp(KeyCode.Space)){
       if(isEnded){
         SceneManager.LoadScene(0);
@@ -164,6 +173,9 @@ public class NightController : MonoBehaviour {
   }
 
   private void HandleEscape(){
+    if(isEnded){
+      return;
+    }
     isEnded = true;
     player.SetAllowInput(false);
     ui.ShowEscapeFail();

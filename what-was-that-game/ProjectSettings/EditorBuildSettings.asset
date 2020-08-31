@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/WhatWasThat/Instr/instr-scene.unity
+    guid: 396037169c0652e4ca60c696b276d8e5
+  - enabled: 1
     path: Assets/WhatWasThat/Night/NightScene.unity
     guid: f4d9033dd61a2f3489884314ae4d135d
   m_configObjects: {}

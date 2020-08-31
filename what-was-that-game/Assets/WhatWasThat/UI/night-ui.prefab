@@ -1773,7 +1773,7 @@ MonoBehaviour:
   fearTick: {fileID: 1933423800340822324}
   restart: {fileID: 1138751252506761351}
   welcome: {fileID: 3944851639523026453}
-  maxTicks: 4
+  maxTicks: 10
   tickSpeed: 3
 --- !u!1 &7307855645087430439
 GameObject:

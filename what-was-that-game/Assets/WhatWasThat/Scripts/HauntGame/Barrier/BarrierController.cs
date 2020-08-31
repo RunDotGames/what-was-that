@@ -75,6 +75,7 @@ public class BarrierController : MonoBehaviour {
       if(indcRoutine != null) StopCoroutine(indcRoutine);
       indcRoutine = StartCoroutine(IndcRoutine(Vector3.one, true));
       indicator.transform.position = point.anchor.position + (Vector3.up * indicateHeight);
+      indicator.transform.rotation = Quaternion.identity;
     }
     if(!builder.IsIndicating()){
       builder.HandleIndicate();

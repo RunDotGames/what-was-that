@@ -51,6 +51,7 @@ public class FearActor {
     var level = levelMap[response];
     var factor = isInSameRoom ? level.sameRoomFactor : level.nextRoomFactor;
     currentFear = Mathf.Min(maxFear, currentFear + factor * fear);
+    Debug.Log(currentFear + " " + maxFear);
     if(currentFear >= maxFear){
       Debug.Log("panic!");
       isPaniced = true;
@@ -69,7 +70,8 @@ public class FearActor {
     var actorConnected = house.GetConnectedPositions(actorPosition);
     actorConnected.Remove(hauntPosition);
     if(actorConnected.Count == 0){
-      Debug.LogError("invalid assert for " + actorPosition + " haunt: " + hauntPosition);
+      //yikes, nowhere to run to
+      return root.position;
     }
     var targetPosition = actorConnected[UnityEngine.Random.Range(0, actorConnected.Count)];
     return house.TranslateInversePosition(targetPosition);

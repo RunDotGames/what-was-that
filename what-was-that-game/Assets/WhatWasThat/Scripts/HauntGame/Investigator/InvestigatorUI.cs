@@ -19,9 +19,12 @@ public class InvestigatorUI : MonoBehaviour{
   public RectTransform iconRow;
   public List<IconReactionConfig> reactionConfigs;
   private FearActor actor;
+  private float currentPercent;
+  public float fillSpeed;
   
   public void Init(List<HauntReaction> reactions, FearActor actor, HauntController hauntController){
     this.actor = actor;
+    currentPercent = minFearShow;
     
     Dictionary<FearReaction, IconReactionConfig> reactMap = new Dictionary<FearReaction, IconReactionConfig>();
     foreach (var config in reactionConfigs){
@@ -50,6 +53,7 @@ public class InvestigatorUI : MonoBehaviour{
         icon.rectTransform.anchorMax = new Vector2((index+1) * reactionIncrement, 1);
         icon.rectTransform.anchoredPosition = Vector2.zero;
         icon.rectTransform.sizeDelta = Vector2.zero;
+        icon.rectTransform.localRotation = Quaternion.identity;
         icon.rectTransform.pivot = Vector2.one * .05f;
         icon.sprite = hauntController.GetIcon(reaction.haunt);
         icon.color = reactMap[reaction.reaction].color;
@@ -63,10 +67,10 @@ public class InvestigatorUI : MonoBehaviour{
       return;
     }
 
-    float percent = actor.GetCurrentFear() / actor.maxFear;
-    Debug.Log(actor.GetCurrentFear());
-    var percentClamped = Math.Max(percent, minFearShow);
-    image.rectTransform.anchorMax = new Vector2(percentClamped, 1.0f);
-    image.color = Color.Lerp(fillStartColor, fillEndColor, percentClamped);
+    float percent = 1.0f - (actor.GetCurrentFear() / actor.maxFear);
+    currentPercent = Mathf.Lerp(currentPercent, Math.Min(percent, minFearShow), Time.deltaTime * fillSpeed);
+    Debug.Log(currentPercent);
+    image.rectTransform.anchorMin = new Vector2(currentPercent, 0);
+    image.color = Color.Lerp(fillStartColor, fillEndColor, 1.0f - currentPercent);
   }
 }

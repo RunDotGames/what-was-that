@@ -7,6 +7,7 @@ public class CameraLook : MonoBehaviour {
     if(cameraRoot == null){
       return;
     }
-    transform.LookAt(cameraRoot);
+    transform.rotation = Quaternion.Euler(0, 0 , 0);
+    //transform.LookAt(cameraRoot);
   }
 }

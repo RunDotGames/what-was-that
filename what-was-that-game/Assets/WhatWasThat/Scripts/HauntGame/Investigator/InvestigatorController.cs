@@ -11,6 +11,10 @@ public class HauntReaction {
 
 
 public class InvestigatorController : MonoBehaviour {
+  public AudioSource source;
+  public AudioClip panic;
+  public AudioClip curiouse;
+  public AudioClip scared;
   public event Action OnEscape;
   public Transform modelRoot;
   private static readonly Vector3 INVALID_DESTINATION = Vector3.one * float.MaxValue;  
@@ -27,7 +31,7 @@ public class InvestigatorController : MonoBehaviour {
   public Vector3 finalOffset;
   
   public InvestigatorUI ui;
-
+  
   private KinimaticMotor motor;
   private Animator animator;
   private PathDirectionController pather;
@@ -39,24 +43,28 @@ public class InvestigatorController : MonoBehaviour {
   private Vector3 entrance;
 
   private Dictionary<HauntType, HauntReaction> reactionMap = new Dictionary<HauntType, HauntReaction>();
-  
+  private bool isCuriouse;
   private bool isMoving;
-
+  private bool isScared;
   private Guid traverseLock = Guid.Empty;
   private Action traverseEvent;
   private Vector3 traverseDestination = INVALID_DESTINATION;
   private string currentBlockAnim;
   private ActionLockController actionLockController;
+  private CameraController cameraController;
+  private Action then;
 
-    public void Init(
+  public void Init(
     KinimaticMotorController motorController,
     NodePathController nodePath,
     HauntController hauntController,
     HouseController house,
     FearController fearController,
     BarrierController barrierController,
-    ActionLockController actionLockController
+    ActionLockController actionLockController,
+    CameraController cameraController
   ){
+    this.cameraController = cameraController;
     this.actionLockController = actionLockController;
     actionLockController.OnLock += HandleActionLock;
     var body = GetComponent<Rigidbody>();
@@ -95,6 +103,8 @@ public class InvestigatorController : MonoBehaviour {
   }
 
   private void HandleScared(FearActor actor){
+    isCuriouse = false;
+    isScared =  true;
     UpdateBreakdownAnim(true);
     currentBlockAnim = fearBreakDownAnim;
     motorAnimator.SetIdleAnim(fearAnim);
@@ -102,6 +112,10 @@ public class InvestigatorController : MonoBehaviour {
   }
 
   private void HandlePanic(FearActor actor){
+    isCuriouse = false;
+    isScared = false;
+    source.clip = panic;
+    source.Play();
     UpdateBreakdownAnim(true);
     isPaniced = true;
     currentBlockAnim = fearBreakDownAnim;
@@ -110,6 +124,8 @@ public class InvestigatorController : MonoBehaviour {
   }
 
   private void HandleCuriouse(FearActor actor){
+    isCuriouse = true;
+    isScared = false;
     UpdateBreakdownAnim(false);
     motorAnimator.SetIdleAnim(curiouseAnim);
     motorAnimator.SetWalkAnim(walkStateName);
@@ -121,7 +137,7 @@ public class InvestigatorController : MonoBehaviour {
     if(isPaniced){
       Debug.Log(Math.Abs((transform.position - entrance).magnitude));
     }
-    if(isPaniced && Math.Abs((transform.position - entrance).magnitude) < .2 ){
+    if(isPaniced && Math.Abs((transform.position - entrance).magnitude) < (0.2f + finalOffset.magnitude) ){
       OnEscape?.Invoke();
     }
     
@@ -134,7 +150,8 @@ public class InvestigatorController : MonoBehaviour {
     motor.FixedUpdate();
   }
 
-  public void GoTo(Vector3 to){
+  public void GoTo(Vector3 to, Action then){
+    this.then = then;
     traverseDestination = to;
     ResumeTraversal();
   }
@@ -180,9 +197,25 @@ public class InvestigatorController : MonoBehaviour {
     if(traverseDestination == INVALID_DESTINATION){
       return;
     }
+    if(isPaniced){
+      cameraController.FollowTillUnlock(transform);
+    }
     pather.Navigate(transform.position, traverseDestination);
     traverseLock = actionLockController.AddLockAction();
     traverseEvent = () => {
+      if(isCuriouse){
+        source.clip = curiouse;
+        source.Play();
+      }
+      if(isScared){
+        source.clip = scared;
+        source.Play();
+      }
+      if(then != null){
+        then();
+        then = null;
+      }
+
       actionLockController.ReleaseLockAction(traverseLock);
       pather.OnArrival-= traverseEvent;
     };

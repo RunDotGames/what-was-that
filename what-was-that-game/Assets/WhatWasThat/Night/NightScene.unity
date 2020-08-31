@@ -20,13 +20,13 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
+  m_AmbientSkyColor: {r: 0.030971862, g: 0.048611734, b: 0.18867922, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 3
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SubtractiveShadowColor: {r: 0, g: 0, b: 0, a: 1}
+  m_SkyboxMaterial: {fileID: 2100000, guid: be467e881108a3246b9df33a645a19a3, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -159,7 +159,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1396923883}
   - {fileID: 615353183}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -185,6 +184,8 @@ MonoBehaviour:
   - {fileID: 934514600159101705, guid: 6bf7055a82c805f4e881100fb889f04c, type: 3}
   - {fileID: 1471835096760324889, guid: 204d2c60b11d34d4da21595583127d14, type: 3}
   - {fileID: 8695546025230744700, guid: edeb4f70c541bc645aa29a9ef19b261e, type: 3}
+  - {fileID: 2930517461902549329, guid: 60390c0f4daa2e144ab9703fa3b3a097, type: 3}
+  - {fileID: 5298493494273677740, guid: 8d3c1c2491a77c042adfbd1260a5bb94, type: 3}
   startingRoomPrefabFront: {fileID: 8831908556890016308, guid: 2f07fe76e686d0449803d1c7c32b235a, type: 3}
   startingRoomPrefabBack: {fileID: 5877830391908436615, guid: 4c29f4607f28eae45962f8a6f59e0eff, type: 3}
   solidWallPrefab: {fileID: 5254317515421900118, guid: e59435928711e4542a0ffb041b1e547e, type: 3}
@@ -233,7 +234,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraPrefab: {fileID: 7916306504156434233, guid: eb4c1e16218a5af409f3e62be43648c7, type: 3}
-  followOffset: {x: 0, y: 16, z: -14}
+  followOffset: {x: 0, y: 20, z: -17}
+  followSpeed: 2
 --- !u!114 &279684551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,13 +250,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bindings:
   - action: 0
-    key: 97
+    key: 276
   - action: 1
-    key: 100
+    key: 275
   - action: 2
-    key: 119
+    key: 273
   - action: 3
-    key: 115
+    key: 274
   - action: 4
     key: 120
 --- !u!114 &279684552
@@ -272,16 +274,16 @@ MonoBehaviour:
   interactionDistance: 5
   indcPrefab: {fileID: -2904799244421630057, guid: bdcdfd1213b1e9246a09b0904db903fb, type: 3}
   possibleIndcPrefab: {fileID: 7858887531459847809, guid: bdcdfd1213b1e9246a09b0904db903fb, type: 3}
-  indcHeight: 4
+  indcHeight: 6
   iconConfigs:
   - hauntType: 1
-    image: {fileID: 21300000, guid: 56f5f87854adb694f9a20fc300f9db51, type: 3}
+    image: {fileID: 21300000, guid: 4c58271f6a377c548b8e99d09f15bfe7, type: 3}
   - hauntType: 0
     image: {fileID: 21300000, guid: 95a0bb548db16ee4fa9c23e2a13e2900, type: 3}
   - hauntType: 3
     image: {fileID: 21300000, guid: 89c9014ea9887344a80247239827fd38, type: 3}
   - hauntType: 2
-    image: {fileID: 21300000, guid: fcbbade7138b0684e9797b2d9fb69b8b, type: 3}
+    image: {fileID: 21300000, guid: fca8aa271a9b90e4a9203c4dd85f8e0c, type: 3}
 --- !u!114 &279684553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -296,14 +298,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factors:
   - reaction: 0
-    nextRoomFactor: 3
-    sameRoomFactor: 4
+    nextRoomFactor: 0
+    sameRoomFactor: 0.5
   - reaction: 1
-    nextRoomFactor: 5
-    sameRoomFactor: 10
+    nextRoomFactor: 2.5
+    sameRoomFactor: 5
   - reaction: 2
-    nextRoomFactor: 1
-    sameRoomFactor: 2
+    nextRoomFactor: 0.5
+    sameRoomFactor: 1
 --- !u!114 &279684554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -342,6 +344,7 @@ MonoBehaviour:
   uiPrefab: {fileID: 3205008967118857186, guid: f31a07655951de84cacdfe11cf36af9d, type: 3}
   investigatorCount: 4
   reactionCount: 3
+  fleeCount: 2
   investigatorPrefab: {fileID: 8968265714543878343, guid: b8e3a04675efd664083e8b86f6ef8f6d, type: 3}
   investigatorModels:
   - {fileID: 1469413014250310099, guid: c56688cbb08432949b42b529eb5e4e70, type: 3}
@@ -349,9 +352,8 @@ MonoBehaviour:
   - {fileID: 4821542365013170280, guid: 5996f8feaa057d243bb9eaea8e62d9ab, type: 3}
   - {fileID: 1390310212540164756, guid: 70520d653228ed943b29f731bcf27ec5, type: 3}
   playerPrefab: {fileID: 5950336308983770953, guid: 807f7fc12dbcd714bbd2419ec63b8efd, type: 3}
-  fleeBuckets: 1
-  approachBuckets: 1
-  offsetDistance: 1
+  offsetDistance: 1.7
+  fearTarget: 1
 --- !u!1 &615353182
 GameObject:
   m_ObjectHideFlags: 0
@@ -380,97 +382,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 279684545}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1396923882
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1396923883}
-  - component: {fileID: 1396923884}
-  m_Layer: 8
-  m_Name: main-light
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1396923883
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1396923882}
-  m_LocalRotation: {x: 0.42260784, y: -0.006323048, z: 0.002948514, w: 0.9062859}
-  m_LocalPosition: {x: 2.531146, y: 4.1603866, z: -1.8348703}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 279684545}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 50, y: -0.799, z: 0}
---- !u!108 &1396923884
-Light:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1396923882}
-  m_Enabled: 1
-  serializedVersion: 10
-  m_Type: 1
-  m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
-  m_Range: 10
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
-  m_Shadows:
-    m_Type: 2
-    m_Resolution: -1
-    m_CustomResolution: -1
-    m_Strength: 1
-    m_Bias: 0.05
-    m_NormalBias: 0.4
-    m_NearPlane: 0.2
-    m_CullingMatrixOverride:
-      e00: 1
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 1
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 1
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 1
-    m_UseCullingMatrixOverride: 0
-  m_Cookie: {fileID: 0}
-  m_DrawHalo: 0
-  m_Flare: {fileID: 0}
-  m_RenderMode: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 55
-  m_RenderingLayerMask: 1
-  m_Lightmapping: 4
-  m_LightShadowCasterMode: 0
-  m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
-  m_ColorTemperature: 6570
-  m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
-  m_UseBoundingSphereOverride: 0
-  m_ShadowRadius: 0
-  m_ShadowAngle: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
